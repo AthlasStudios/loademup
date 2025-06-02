@@ -1,0 +1,4 @@
+name: '${projectName}'
+version: '${version}'
+main: club.athlas.athlasdevtemplate.AthlasDevTemplate
+api-version: '1.20'
