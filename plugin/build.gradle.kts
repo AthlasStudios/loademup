@@ -1,5 +1,7 @@
 plugins {
     id("com.gradleup.shadow") version "8.3.5"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("io.papermc.paperweight.userdev") version "1.7.7"
 }
 
 val projectName = rootProject.name
@@ -9,9 +11,17 @@ dependencies {
     implementation(project(":api"))
 
     // DEPENDENCIES
+    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+
+    implementation("me.gurwi:CommandFramework:1.0.3")
 }
 
 tasks {
+    compileJava {
+        options.encoding = "UTF-8"
+        options.release = 21
+    }
+
     assemble {
         dependsOn(shadowJar)
     }
@@ -19,6 +29,10 @@ tasks {
     shadowJar {
         archiveFileName = "${projectName}-${version}.jar"
 
-        // CommandFramework Relocation -> relocate("me.gurwi.commandframework", "club.athlas.libs.commands")
+        relocate("me.gurwi.commandframework", "club.athlas.loademup.libs.commands")
+    }
+
+    runServer {
+        minecraftVersion("1.21.5")
     }
 }

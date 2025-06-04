@@ -11,35 +11,29 @@ subprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal() // TODO -> MOVE TO PUBLIC REPO
 
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
             name = "spigotmc-repo"
+        }
+
+        maven("https://repo.papermc.io/repository/maven-public/") {
+            name = "papermc-repo"
         }
 
         maven("https://oss.sonatype.org/content/groups/public/") {
             name = "sonatype"
         }
 
-        maven("https://repo.athlas.club/private") {
-
-            credentials {
-                username = findProperty("athlasMavenUser") as String?
-                password = findProperty("athlasMavenPassword") as String?
-            }
-
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
-        }
-
     }
 
     dependencies {
         implementation("org.jetbrains:annotations:24.0.0")
-        compileOnly("org.spigotmc:spigot-api:1.20.3-R0.1-SNAPSHOT")
+        compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+        //compileOnly("org.spigotmc:spigot-api:1.21.5-R0.1-SNAPSHOT")
     }
 
-    val targetJavaVersion = 17
+    val targetJavaVersion = 21
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
 
