@@ -2,7 +2,7 @@ package club.athlas.loademup.server.loader;
 
 import club.athlas.loademup.LoadEmUp;
 import club.athlas.loademup.api.exceptions.PluginAlreadyLoadedException;
-import club.athlas.loademup.api.exceptions.PluginFileNotFound;
+import club.athlas.loademup.api.exceptions.PluginFileNotFoundException;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.loader.Simulator;
 import club.athlas.loademup.api.object.Dependency;
@@ -68,7 +68,7 @@ public abstract class BasePluginLoader implements PluginLoader {
 
     @Override
     public Optional<Plugin> reload(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException {
-        if (getPluginFile(plugin).isEmpty()) throw new PluginFileNotFound(plugin);
+        if (getPluginFile(plugin).isEmpty()) throw new PluginFileNotFoundException(plugin);
 
         unload(plugin);
         return load(plugin);

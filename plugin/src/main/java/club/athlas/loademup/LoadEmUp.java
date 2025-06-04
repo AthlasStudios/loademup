@@ -13,13 +13,9 @@ import org.jetbrains.annotations.NotNull;
 
 public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
-    private final PluginLoadersManager loadersManager;
+    private final PluginLoadersManager loadersManager = new LoadersManager();
 
     private PluginLoader pluginLoader;
-
-    public LoadEmUp() {
-        this.loadersManager = new LoadersManager(this);
-    }
 
     @Override
     public void onLoad() {
