@@ -8,8 +8,13 @@ import club.athlas.loademup.api.loader.Simulator;
 import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.utils.FileUtils;
 import club.athlas.loademup.server.utils.ReflectionUtils;
+import club.athlas.loademup.server.utils.ThreadUtils;
+import club.athlas.loademup.server.wrapper.WrappedInstanceManager;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
@@ -84,6 +89,8 @@ public abstract class BasePluginLoader implements PluginLoader {
     @Override
     public void disablePlugin(@NotNull Plugin plugin) {
         if (!plugin.isEnabled()) return;
+
+        stopPluginThreads(plugin);
         pluginManager.disablePlugin(plugin);
     }
 
@@ -105,29 +112,34 @@ public abstract class BasePluginLoader implements PluginLoader {
     }
 
     @Override
+    public Set<Plugin> getPlugins() {
+        return Set.of(pluginManager.getPlugins());
+    }
+
+    @Override
     public Optional<Plugin> getPlugin(@NotNull String name) {
         return Optional.ofNullable(pluginManager.getPlugin(name));
     }
 
     @Override
-    public Set<Dependency> getMissingDependencies(@NotNull PluginDescriptionFile description) {
+    public List<Dependency> getMissingDependencies(@NotNull PluginDescriptionFile description) {
         return getDependencies(description).stream()
                 .filter(dependency -> dependency.required() && !dependency.isLoaded())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Set<Dependency> getMissingDependencies(@NotNull File file) {
+    public List<Dependency> getMissingDependencies(@NotNull File file) {
         return getDescriptionFile(file)
                 .map(this::getMissingDependencies)
-                .orElse(Collections.emptySet());
+                .orElse(Collections.emptyList());
     }
 
     @Override
-    public Set<Dependency> getDependencies(@NotNull File file) {
+    public List<Dependency> getDependencies(@NotNull File file) {
         return getDescriptionFile(file)
                 .map(this::getDependencies)
-                .orElse(Collections.emptySet());
+                .orElse(Collections.emptyList());
     }
 
     @Override
@@ -194,11 +206,61 @@ public abstract class BasePluginLoader implements PluginLoader {
         ((CraftServer) Bukkit.getServer()).syncCommands();
     }
 
+    protected void cleanup(@NotNull WrappedInstanceManager instanceManager, Plugin plugin) {
+        Map<String, Command> knownCommands = instanceManager.getCommandMap().getKnownCommands();
+
+        instanceManager.getPlugins().remove(plugin);
+        instanceManager.getLookupNames().remove(plugin.getName());
+        instanceManager.getLookupNames().remove(plugin.getName().toLowerCase());
+
+        HandlerList.unregisterAll(plugin);
+
+        Set<String> keysToRemove = knownCommands.entrySet().stream()
+                .filter(e -> e.getValue() instanceof PluginCommand pluginCommand && pluginCommand.getPlugin().equals(plugin))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+
+        keysToRemove.forEach(knownCommands::remove);
+
+        Bukkit.getScheduler().cancelTasks(plugin);
+        Bukkit.getServicesManager().unregisterAll(plugin);
+        closeClassLoader(plugin);
+        syncCommands();
+
+        System.gc();
+    }
+
     protected void closeClassLoader(@NotNull Plugin plugin) {
         try {
             if (plugin.getClass().getClassLoader() instanceof URLClassLoader urlClassLoader) urlClassLoader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void stopPluginThreads(Plugin target) {
+        Set<Thread> threads = ThreadUtils.getThreadsFromPlugin(target);
+        if (threads.isEmpty()) return;
+
+        plugin.getLogger().info("Interrupting " + threads.size() + " thread(s) for plugin: " + plugin.getName());
+
+        for (Thread thread : threads) {
+            try {
+                plugin.getLogger().warning("Interrupting thread: " + thread.getName());
+
+                thread.interrupt();
+                thread.join(2000);
+
+                if (thread.isAlive()) {
+                    // Hopefully we are never getting here
+                    plugin.getLogger().warning("Thread is still alive after interruption: " + thread.getName());
+                } else {
+                    plugin.getLogger().info("Thread stopped cleanly: " + thread.getName());
+                }
+            } catch (Throwable t) {
+                plugin.getLogger().severe("Error while stopping thread: " + thread.getName());
+                t.printStackTrace();
+            }
         }
     }
 

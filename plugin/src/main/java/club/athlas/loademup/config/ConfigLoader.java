@@ -1,0 +1,121 @@
+package club.athlas.loademup.config;
+
+import club.athlas.loademup.api.utils.FileUtils;
+import club.athlas.loademup.config.base.YamlFileHandle;
+import club.athlas.loademup.config.constant.ConfigKey;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.logging.Level;
+
+public class ConfigLoader {
+
+    private final Plugin plugin;
+
+    private FileConfiguration config;
+    private LangLoader langLoader;
+
+    public ConfigLoader(Plugin plugin) {
+        this.plugin = plugin;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void load() {
+        plugin.saveDefaultConfig();
+        plugin.getDataFolder().mkdirs();
+
+        config = plugin.getConfig();
+        langLoader = initLang();
+    }
+
+    public void reload() {
+        plugin.reloadConfig();
+
+        config = plugin.getConfig();
+        langLoader = initLang();
+    }
+
+    @Contract(value = " -> new", pure = true)
+    private @NotNull LangLoader initLang() {
+        loadDefaultLang();
+
+        String currentLang = getString(ConfigKey.LANG_FILE, "EN_us");
+        YamlFileHandle langConfig = YamlFileHandle.fromPath(plugin, "lang/" + currentLang + ".yml");
+
+        if (!langConfig.getFile().exists()) {
+            plugin.getLogger().log(Level.SEVERE, "[Lang] Couldn't load language! Invalid lang file. Using the default one -> EN_us");
+            langConfig = YamlFileHandle.fromPath(plugin, "lang/EN_us.yml");
+        }
+
+        plugin.getLogger().log(Level.INFO, "[Lang] Language loaded from file " + langConfig.getFile().getName());
+        return new LangLoader(plugin.getConfig(), langConfig.getConfig());
+    }
+
+    private void loadDefaultLang() {
+        List<String> availableLang = List.of("EN_us", "IT_it");
+
+        availableLang.forEach(defLang -> {
+            String path = "lang/" + defLang + ".yml";
+            if (!FileUtils.fileExists(plugin.getDataFolder().getAbsolutePath() + "/" + path)) plugin.saveResource(path, false);
+        });
+    }
+
+    public String getString(@NotNull ConfigKey configKey, String defaultValue) {
+        String s = config.getString(configKey.getPath());
+
+        if (s == null || s.isEmpty()) {
+            printInvalidValueWarning(configKey, String.valueOf(defaultValue), true);
+            return defaultValue;
+        }
+
+        return s;
+    }
+
+    public boolean getBool(@NotNull ConfigKey configKey, boolean defaultValue) {
+        if (!config.isSet(configKey.getPath())) {
+            printInvalidValueWarning(configKey, String.valueOf(defaultValue), true);
+            return defaultValue;
+        }
+
+        String stringValue = config.getString(configKey.getPath());
+        if (!(stringValue != null && (stringValue.equalsIgnoreCase("true") || stringValue.equalsIgnoreCase("false")))) {
+            printInvalidValueWarning(configKey, String.valueOf(defaultValue), false);
+            return defaultValue;
+        }
+
+        return config.getBoolean(configKey.getPath());
+    }
+
+    public long getLong(@NotNull ConfigKey configKey, long defaultValue) {
+        if (config.get(configKey.getPath()) == null) {
+            printInvalidValueWarning(configKey, String.valueOf(defaultValue), true);
+            return defaultValue;
+        }
+
+        try {
+            String stringValue = config.getString(configKey.getPath());
+            if (stringValue == null) {
+                printInvalidValueWarning(configKey, String.valueOf(defaultValue), true);
+                return defaultValue;
+            }
+
+            Long.parseLong(stringValue);
+            return config.getLong(configKey.getPath());
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+
+    }
+
+    public LangLoader getLangLoader() {
+        return langLoader;
+    }
+
+    private void printInvalidValueWarning(@NotNull ConfigKey key, String defaultValue, boolean empty) {
+        plugin.getLogger().warning("[Config] " + (empty ? "Empty" : "Invalid") + " value found in " + key.getPath() +" in config.yml! Using the default one -> " + defaultValue);
+    }
+
+}

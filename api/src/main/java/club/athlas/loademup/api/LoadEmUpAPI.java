@@ -1,5 +1,6 @@
 package club.athlas.loademup.api;
 
+import club.athlas.loademup.api.constant.Environment;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.loader.PluginLoadersManager;
 import org.jetbrains.annotations.NotNull;
@@ -11,4 +12,5 @@ public interface LoadEmUpAPI {
 
     @NotNull PluginLoader getLoader();
 
+    Environment getEnvironment();
 }

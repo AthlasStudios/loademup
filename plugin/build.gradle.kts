@@ -14,6 +14,7 @@ dependencies {
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
 
     implementation("me.gurwi:CommandFramework:1.0.3")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
 }
 
 tasks {
@@ -30,6 +31,7 @@ tasks {
         archiveFileName = "${projectName}-${version}.jar"
 
         relocate("me.gurwi.commandframework", "club.athlas.loademup.libs.commands")
+        relocate("net.kyori", "club.athlas.loademup.libs.kyori")
     }
 
     runServer {

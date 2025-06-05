@@ -3,6 +3,10 @@ version: '${version}'
 main: club.athlas.loademup.LoadEmUp
 api-version: '1.21'
 
+description: "Advanced Spigot Plugin Manager"
+website: "https://athlas.club"
+softdepend: [InventoryTracker]
+
 commands:
   loademup:
     description: Main Command

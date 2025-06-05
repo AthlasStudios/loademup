@@ -8,6 +8,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,15 +32,21 @@ public interface PluginLoader {
 
     void reloadConfig(@NotNull Plugin plugin);
 
+    Set<Plugin> getPlugins();
+
     Optional<Plugin> getPlugin(@NotNull String name);
 
-    Set<Dependency> getMissingDependencies(@NotNull PluginDescriptionFile description);
+    List<Dependency> getDependents(@NotNull Plugin plugin);
 
-    Set<Dependency> getMissingDependencies(@NotNull File file);
+    List<Dependency> getMissingDependencies(@NotNull PluginDescriptionFile description);
 
-    Set<Dependency> getDependencies(@NotNull PluginDescriptionFile description);
+    List<Dependency> getMissingDependencies(@NotNull File file);
 
-    Set<Dependency> getDependencies(@NotNull File file);
+    List<Dependency> getDependencies(@NotNull PluginDescriptionFile description);
+
+    List<Dependency> getDependencies(@NotNull Plugin plugin);
+
+    List<Dependency> getDependencies(@NotNull File file);
 
     Optional<PluginDescriptionFile> getDescriptionFile(File file);
 
