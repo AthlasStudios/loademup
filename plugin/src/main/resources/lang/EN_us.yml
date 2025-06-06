@@ -9,6 +9,7 @@ prefix: ""
 pluginNotFound: " <error>⚠ No plugin found named <name>."
 jarNotFound: " <error>⚠ Couldn't find any .jar file named <file>."
 invalidPluginJar: " <error>⚠ <file> is invalid or corrupt plugin JAR."
+unsupportedPluginAction: " <error>⚠ This plugin doesn't support this action. The developer has explicitly disabled <action> through its configuration or metadata."
 
 missingPluginDescription: " <error>⚠ Plugin JAR is missing a <bold>plugin.yml</bold> description section."
 missingPluginName: " <error>⚠ Plugin name is missing or empty in plugin.yml."
@@ -25,6 +26,7 @@ lookingForNewJar: " <primary>🔍 Looking for a new JAR file for <plugin:name>..
 lookingForPluginYML: " <primary>🔍 Looking for valid plugin.yml in <file>..."
 startingIntegrityCheck: " <primary>🧪 Starting integrity check on <file>..."
 checkingDependencies: " <primary>🛠 Checking plugin dependencies..."
+checkingDependants: " <primary>🛠 Checking for dependant plugins of <plugin:name>..."
 
 tryingToReload: " <primary>🔄 Reloading <plugin:name> <secondary>v<plugin:version>..."
 pluginReloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>reloaded in <time:millis>ms."
@@ -37,6 +39,7 @@ pluginLoadedButDisabled: " <error>⚠ <plugin:name> <secondary>v<plugin:version>
 pluginAlreadyLoaded: " <secondary>ℹ <plugin:name> is already loaded."
 
 tryingToUnload: " <primary>⏳ Unloading <plugin:name> <secondary>v<plugin:version>..."
+pluginUnloadBlocked: " <error>⚠ Unable to unload <plugin:name>. Found the following dependants: <secondary><dependants>."
 pluginUnloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>unloaded in <time:millis>ms."
 pluginUnloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to unload <plugin:name>. Hover for details or check console."
 

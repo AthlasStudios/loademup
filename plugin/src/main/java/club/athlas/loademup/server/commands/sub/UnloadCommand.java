@@ -1,10 +1,13 @@
 package club.athlas.loademup.server.commands.sub;
 
 import club.athlas.loademup.LoadEmUp;
+import club.athlas.loademup.api.constant.LEUAction;
 import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
+import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.object.PluginData;
 import club.athlas.loademup.config.constant.LangKey;
+import club.athlas.loademup.server.commands.CommandCommons;
 import club.athlas.loademup.utils.TagResolverUtils;
 import me.gurwi.commandframework.arguments.BooleanArgument;
 import me.gurwi.commandframework.arguments.StringArgument;
@@ -13,6 +16,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.plugin.Plugin;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class UnloadCommand extends SubCommand<LoadEmUp> {
@@ -51,12 +55,26 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
 
             loader.getPlugin(pluginName).ifPresentOrElse(
                     targetPlugin -> {
+                        if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.UNLOAD, targetPlugin, sender)) return;
+
                         TagResolver placeholder = TagResolverUtils.resolverFrom(PluginData.from(targetPlugin));
+
+                        plugin.getMessages().send(sender, LangKey.CHECKING_DEPENDENTS, placeholder);
+
+                        List<String> dependants = loader.getDependents(targetPlugin).stream()
+                                .filter(Dependency::isLoaded)
+                                .map(Dependency::name)
+                                .toList();
+
+                        if (!dependants.isEmpty()) {
+                            plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_BLOCKED, placeholder, TagResolverUtils.listPlaceholder("dependants", dependants));
+                            return;
+                        }
+
                         plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_START, placeholder);
 
-                        long start = System.currentTimeMillis();
-
                         try {
+                            long start = System.currentTimeMillis();
                             loader.unload(targetPlugin);
                             long time = System.currentTimeMillis() - start;
 

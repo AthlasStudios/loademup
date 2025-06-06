@@ -1,6 +1,7 @@
 package club.athlas.loademup.server.commands.sub;
 
 import club.athlas.loademup.LoadEmUp;
+import club.athlas.loademup.api.constant.LEUAction;
 import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.PluginData;
@@ -53,6 +54,8 @@ public class LoadCommand extends SubCommand<LoadEmUp> {
 
             loader.getPluginFile(jarFile).ifPresentOrElse(
                     targetFile -> {
+                        if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.LOAD, targetFile, sender)) return;
+
                         plugin.getMessages().send(sender, LangKey.LOOKING_FOR_PLUGIN_YML, Placeholder.parsed("file", targetFile.getName()));
                         plugin.getMessages().send(sender, LangKey.INTEGRITY_CHECK_START, Placeholder.parsed("file", targetFile.getName()));
 

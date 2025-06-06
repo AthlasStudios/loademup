@@ -1,10 +1,12 @@
 package club.athlas.loademup.server.commands.sub;
 
 import club.athlas.loademup.LoadEmUp;
+import club.athlas.loademup.api.constant.LEUAction;
 import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.PluginData;
 import club.athlas.loademup.config.constant.LangKey;
+import club.athlas.loademup.server.commands.CommandCommons;
 import club.athlas.loademup.utils.TagResolverUtils;
 import me.gurwi.commandframework.arguments.StringArgument;
 import me.gurwi.commandframework.usable.SubCommand;
@@ -43,6 +45,8 @@ public class DisableCommand extends SubCommand<LoadEmUp> {
 
             loader.getPlugin(pluginName).ifPresentOrElse(
                     targetPlugin -> {
+                        if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.LOAD, targetPlugin, sender)) return;
+
                         TagResolver placeholder = TagResolverUtils.resolverFrom(PluginData.from(targetPlugin));
 
                         if (!targetPlugin.isEnabled()) {

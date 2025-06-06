@@ -1,6 +1,7 @@
 package club.athlas.loademup.server.commands.sub;
 
 import club.athlas.loademup.LoadEmUp;
+import club.athlas.loademup.api.constant.LEUAction;
 import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.PluginData;
@@ -53,6 +54,8 @@ public class ReloadCommand extends SubCommand<LoadEmUp> {
 
             loader.getPlugin(pluginName).ifPresentOrElse(
                     targetPlugin -> {
+                        if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.RELOAD, targetPlugin, sender)) return;
+
                         TagResolver pluginDataPlaceholder = TagResolverUtils.resolverFrom(PluginData.from(targetPlugin));
                         plugin.getMessages().send(sender, LangKey.LOOKING_FOR_NEW_JAR_FILE, pluginDataPlaceholder);
 

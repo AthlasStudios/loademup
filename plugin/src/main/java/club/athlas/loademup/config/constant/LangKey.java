@@ -7,6 +7,7 @@ public enum LangKey {
     PLUGIN_NOT_FOUND("pluginNotFound"),
     JAR_NOT_FOUND("jarNotFound"),
     INVALID_PLUGIN_JAR("invalidPluginJar"),
+    UNSUPPORTED_PLUGIN_ACTION("unsupportedPluginAction"),
 
     MISSING_PLUGIN_DESCRIPTION("missingPluginDescription"),
     MISSING_PLUGIN_NAME("missingPluginName"),
@@ -23,6 +24,7 @@ public enum LangKey {
     LOOKING_FOR_PLUGIN_YML("lookingForPluginYML"),
     INTEGRITY_CHECK_START("startingIntegrityCheck"),
     CHECKING_DEPENDENCIES("checkingDependencies"),
+    CHECKING_DEPENDENTS("checkingDependants"),
 
     PLUGIN_RELOAD_START("tryingToReload"),
     PLUGIN_RELOADED("pluginReloaded"),
@@ -35,6 +37,7 @@ public enum LangKey {
     PLUGIN_ALREADY_LOADED("pluginAlreadyLoaded"),
 
     PLUGIN_UNLOAD_START("tryingToUnload"),
+    PLUGIN_UNLOAD_BLOCKED("pluginUnloadBlocked"),
     PLUGIN_UNLOADED("pluginUnloaded"),
     PLUGIN_UNLOAD_FAIL("pluginUnloadFail"),
 

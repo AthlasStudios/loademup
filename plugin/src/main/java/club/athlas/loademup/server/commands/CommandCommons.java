@@ -1,11 +1,14 @@
 package club.athlas.loademup.server.commands;
 
 import club.athlas.loademup.LoadEmUp;
+import club.athlas.loademup.api.constant.LEUAction;
 import club.athlas.loademup.api.object.Dependency;
+import club.athlas.loademup.api.utils.LEUUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.utils.TagResolverUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,6 +78,22 @@ public class CommandCommons {
         plugin.getMessages().send(sender, LangKey.MISSING_DEPENDENCIES, TagResolverUtils.listPlaceholder("dependencies", missingDeps));
 
         return false;
+    }
+
+    public static boolean sendUnsupportedAction(@NotNull LoadEmUp plugin, LEUAction action, File file, CommandSender sender) {
+        if (LEUUtils.isSupported(file, action)) return true;
+
+        plugin.getMessages().send(
+                sender,
+                LangKey.UNSUPPORTED_PLUGIN_ACTION,
+                Placeholder.parsed("action", action.name())
+        );
+
+        return false;
+    }
+
+    public static boolean sendUnsupportedAction(@NotNull LoadEmUp plugin, LEUAction action, Plugin target, CommandSender sender) {
+        return plugin.getLoader().getPluginFile(target).map(file -> sendUnsupportedAction(plugin, action, file, sender)).orElse(true);
     }
 
 }

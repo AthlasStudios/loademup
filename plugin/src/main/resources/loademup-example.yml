@@ -1,0 +1,10 @@
+version: 1.0.0
+supported: false
+
+supported-actions:
+  - RELOAD
+  - LOAD
+  - ENABLE
+  - DISABLE
+  - UNLOAD
+  - ALL
