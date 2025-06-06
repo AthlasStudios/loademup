@@ -53,6 +53,20 @@ pluginDisabled: "<success>✔ <plugin:name> <secondary>v<plugin:version> <succes
 pluginDisableFail: "<hover:show_text:'<error><error_msg>'><error>❌ Failed to disable <plugin:name>. Hover for details or check console."
 pluginAlreadyDisabled: "<secondary>ℹ <plugin:name> is already disabled."
 
+virusScanStart: " <primary>⚡ Starting VirusTotal scan for suspicious content..."
+virusScanClear: " <success>✔ VirusTotal scan complete. No threats detected."
+
+virusScanThreatsFound: |-
+  /n
+  <error>❗ VirusTotal scan complete. <detections:count> threats detected:
+  <list>
+  /n
+virusScanResultFormat: "• <gold><detection:type></gold> (<#FF4B4B><detection:severity></#FF4B4B>)"
+
+virusScanUnableToScan: " <error>❌ Unable to perform VirusTotal scan at this time."
+virusScanNoResult: " <error>⚠ VirusTotal scan did not return a result."
+virusScanServiceDisabled: " <error>⚠ VirusTotal scanning service is disabled or still loading."
+
 help:
   header: "\n <gradient:#00C8FF:#0088FF><bold>LoadEmUp</bold></gradient> <dark_gray><bold>›</bold></dark_gray> <#A0A0A0><italic>Running on</italic></#A0A0A0> <build>\n\n"
   commandFormat: " <#4FB2FF>»</#4FB2FF> <hover:show_text:'<#A0A0A0>Click to autocomplete this command'><click:suggest_command:'/<helpvalue:command>'><#00C8FF>/<helpvalue:command></#00C8FF></click></hover> <#A0A0A0>–</#A0A0A0> <white><helpvalue:description></white>"

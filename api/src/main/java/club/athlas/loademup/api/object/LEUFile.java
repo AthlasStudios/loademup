@@ -93,7 +93,7 @@ public class LEUFile {
     }
 
     public boolean isSupported() {
-        return supported;
+        return supported || supportedActions.contains(LEUAction.NONE);
     }
 
     public Set<LEUAction> getSupportedActions() {

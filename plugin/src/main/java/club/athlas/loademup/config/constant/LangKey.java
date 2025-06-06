@@ -51,6 +51,15 @@ public enum LangKey {
     PLUGIN_DISABLE_FAIL("pluginDisableFail"),
     PLUGIN_ALREADY_DISABLED("pluginAlreadyDisabled"),
 
+    VIRUS_SCAN_START("virusScanStart"),
+    VIRUS_SCAN_CLEAR("virusScanClear"),
+    VIRUS_SCAN_THREATS_FOUND("virusScanThreatsFound"),
+    VIRUS_SCAN_RESULT_FORMAT("virusScanResultFormat"),
+
+    VIRUS_SCAN_UNABLE_TO_SCAN("virusScanUnableToScan"),
+    VIRUS_SCAN_NO_RESULT("virusScanNoResult"),
+    VIRUS_SCAN_SERVICE_DISABLED("virusScanServiceDisabled"),
+
     HELP_MESSAGE_HEADER("help.header"),
     HELP_MESSAGE_COMMAND_FORMAT("help.commandFormat"),
     HELP_MESSAGE_FOOTER("help.footer");

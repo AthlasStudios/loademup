@@ -14,9 +14,11 @@ import me.gurwi.commandframework.arguments.StringArgument;
 import me.gurwi.commandframework.usable.SubCommand;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UnloadCommand extends SubCommand<LoadEmUp> {
@@ -42,12 +44,12 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
         );
 
         withOptionalArguments(
-                new BooleanArgument("reload-deps")
+                new BooleanArgument("unload-deps")
         );
 
         executes((sender, args) -> {
             String pluginName = (String) args.get("plugin");
-            boolean reloadDependants = args.getOptional("reload-deps")
+            boolean unloadDeps = args.getOptional("unload-deps")
                     .map(o -> (boolean) o)
                     .orElse(false);
 
@@ -66,23 +68,19 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
                                 .map(Dependency::name)
                                 .toList();
 
-                        if (!dependants.isEmpty()) {
+                        if (!dependants.isEmpty() && !unloadDeps) {
                             plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_BLOCKED, placeholder, TagResolverUtils.listPlaceholder("dependants", dependants));
                             return;
                         }
 
                         plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_START, placeholder);
 
-                        try {
-                            long start = System.currentTimeMillis();
-                            loader.unload(targetPlugin);
-                            long time = System.currentTimeMillis() - start;
+                        unloadPlugin(targetPlugin, sender);
 
-                            plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOADED, placeholder, TagResolverUtils.resolverFromTime(time));
-                        } catch (Exception e) {
-                            plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
-                            e.printStackTrace();
-                        }
+                        dependants.stream()
+                                .map(loader::getPlugin)
+                                .filter(Optional::isPresent)
+                                .forEach(dependant -> unloadPlugin(dependant.get(), sender));
                     },
 
                     () -> plugin.getMessages().send(sender, LangKey.PLUGIN_NOT_FOUND, Placeholder.parsed("name", pluginName))
@@ -90,6 +88,21 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
 
             sender.sendMessage("\n");
         });
+    }
+
+    private void unloadPlugin(Plugin targetPlugin, CommandSender sender) {
+        TagResolver placeholder = TagResolverUtils.resolverFrom(PluginData.from(targetPlugin));
+
+        try {
+            long start = System.currentTimeMillis();
+            loader.unload(targetPlugin);
+            long time = System.currentTimeMillis() - start;
+
+            plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOADED, placeholder, TagResolverUtils.resolverFromTime(time));
+        } catch (Exception e) {
+            plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
+            e.printStackTrace();
+        }
     }
 
 }

@@ -3,9 +3,8 @@ version: '${version}'
 main: club.athlas.loademup.LoadEmUp
 api-version: '1.21'
 
-description: "Advanced Spigot Plugin Manager"
+description: "Advanced plugin reloader for Spigot — smart, safe, and production-ready."
 website: "https://athlas.club"
-softdepend: [InventoryTracker]
 
 commands:
   loademup:

@@ -1,6 +1,7 @@
 package club.athlas.loademup.utils;
 
 import club.athlas.loademup.api.object.PluginData;
+import club.athlas.loademup.api.virustotal.model.VTAnalysisResult;
 import me.gurwi.commandframework.utility.helpers.HelpValue;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
@@ -39,6 +40,38 @@ public class TagResolverUtils {
                 case "command" -> helpValue.getCommand();
                 case "description" -> helpValue.getDescription();
                 case "permission" -> helpValue.getPermission().getPermission();
+                default -> "<red>invalid param";
+            };
+
+            return Tag.preProcessParsed(value);
+        });
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull TagResolver resolverFrom(VTAnalysisResult avResult) {
+        return TagResolver.resolver("detections", (args, ctx) -> {
+            final String param = args.popOr("param expected").value();
+            String value = switch (param) {
+                case "status" -> avResult.status();
+                case "amount" -> String.valueOf(avResult.detections().size());
+                default -> "<red>invalid param";
+            };
+
+            return Tag.preProcessParsed(value);
+        });
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull TagResolver resolverFrom(VTAnalysisResult.AVResult avResult) {
+        return TagResolver.resolver("detection", (args, ctx) -> {
+            final String param = args.popOr("param expected").value();
+            String value = switch (param) {
+                case "engine" -> avResult.engine();
+                case "version" -> avResult.version();
+                case "verdict" -> avResult.verdict().name();
+                case "type" -> avResult.type();
+                case "method" -> avResult.method();
+                case "severity" -> avResult.severity().name();
                 default -> "<red>invalid param";
             };
 

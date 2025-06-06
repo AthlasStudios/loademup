@@ -10,6 +10,7 @@ public interface LEUPermission {
     String RELOAD_COMMAND = COMMAND_PREFIX + "reload";
     String ENABLE_COMMAND = COMMAND_PREFIX + "enable";
     String DISABLE_COMMAND = COMMAND_PREFIX + "disable";
+    String SCAN_COMMAND = COMMAND_PREFIX + "scan";
     String INFO_COMMAND = COMMAND_PREFIX + "info";
 
 }

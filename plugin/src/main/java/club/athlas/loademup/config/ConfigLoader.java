@@ -20,11 +20,13 @@ public class ConfigLoader {
         this.plugin = plugin;
     }
 
-    public void load() {
+    public ConfigLoader load() {
         plugin.saveDefaultConfig();
 
         config = plugin.getConfig();
         messages = initLang();
+
+        return this;
     }
 
     public void reload() {

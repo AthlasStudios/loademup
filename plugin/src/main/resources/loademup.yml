@@ -1,0 +1,7 @@
+version: 1.0.0
+supported: true
+
+supported-actions:
+  - LOAD
+  - RELOAD
+  - ENABLE

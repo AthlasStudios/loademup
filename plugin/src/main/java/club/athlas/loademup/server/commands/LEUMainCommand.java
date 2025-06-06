@@ -28,6 +28,7 @@ public class LEUMainCommand extends CommandSupplier {
                         new DisableCommand(plugin),
                         new LoadCommand(plugin),
                         new UnloadCommand(plugin),
+                        new ScanCommand(plugin),
                         new InfoCommand(plugin),
                         new HelpCommand(plugin)
                 ).executes((GenericCommandExecutor) new HelpCommand(plugin).getMeta().getExecutors().get(ExecutorType.GENERIC));

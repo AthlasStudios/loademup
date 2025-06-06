@@ -16,6 +16,7 @@ dependencies {
     implementation("me.gurwi:CommandFramework:1.0.3")
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
     implementation("net.kyori:adventure-text-minimessage:4.21.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 //    implementation("org.mockito:mockito-core:5.12.0")
 //    implementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.0.0")
 }
@@ -35,6 +36,7 @@ tasks {
 
         relocate("me.gurwi.commandframework", "club.athlas.loademup.libs.commands")
         relocate("net.kyori", "club.athlas.loademup.libs.kyori")
+        relocate("com.squareup.okhttp3", "club.athlas.loademup.okhttp3")
     }
 
     runServer {
