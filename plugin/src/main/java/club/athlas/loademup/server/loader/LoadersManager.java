@@ -4,6 +4,7 @@ import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.loader.PluginLoadersManager;
 import club.athlas.loademup.api.platform.DefPlatform;
 import club.athlas.loademup.api.platform.Platform;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class LoadersManager implements PluginLoadersManager {
     }
 
     @Override
-    public PluginLoader findBestLoader() {
+    public @Nullable PluginLoader findBestLoader() {
         return loaders.get(DefPlatform.getCurrentPlatform());
     }
 

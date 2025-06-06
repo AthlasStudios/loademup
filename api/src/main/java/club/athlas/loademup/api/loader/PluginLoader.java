@@ -1,6 +1,9 @@
 package club.athlas.loademup.api.loader;
 
+import club.athlas.loademup.api.exceptions.PluginAlreadyLoadedException;
+import club.athlas.loademup.api.exceptions.PluginFileNotFoundException;
 import club.athlas.loademup.api.object.Dependency;
+import club.athlas.loademup.api.result.ClassLoaderValidationResult;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
@@ -14,13 +17,13 @@ import java.util.Set;
 
 public interface PluginLoader {
 
-    Optional<Plugin> load(File file) throws InvalidPluginException, InvalidDescriptionException;
+    Optional<Plugin> load(File file) throws InvalidPluginException, InvalidDescriptionException, PluginAlreadyLoadedException;
 
-    Optional<Plugin> load(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException;
+    Optional<Plugin> load(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException, PluginAlreadyLoadedException;
 
     void unload(Plugin plugin);
 
-    Optional<Plugin> reload(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException;
+    Optional<Plugin> reload(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException, PluginFileNotFoundException;
 
     boolean isLoaded(File file);
 
@@ -58,6 +61,5 @@ public interface PluginLoader {
 
     @NotNull File getPluginsFolder();
 
-    @NotNull Simulator getSimulatedPluginLoader();
-
+    ClassLoaderValidationResult validateClassLoader(File file);
 }

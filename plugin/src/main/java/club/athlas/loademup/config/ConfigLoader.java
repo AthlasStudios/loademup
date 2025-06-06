@@ -1,57 +1,45 @@
 package club.athlas.loademup.config;
 
+import club.athlas.loademup.LoadEmUp;
 import club.athlas.loademup.api.utils.FileUtils;
-import club.athlas.loademup.config.base.YamlFileHandle;
 import club.athlas.loademup.config.constant.ConfigKey;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.logging.Level;
 
 public class ConfigLoader {
 
-    private final Plugin plugin;
+    private final LoadEmUp plugin;
 
     private FileConfiguration config;
-    private LangLoader langLoader;
+    private Messages messages;
 
-    public ConfigLoader(Plugin plugin) {
+    public ConfigLoader(LoadEmUp plugin) {
         this.plugin = plugin;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void load() {
         plugin.saveDefaultConfig();
-        plugin.getDataFolder().mkdirs();
 
         config = plugin.getConfig();
-        langLoader = initLang();
+        messages = initLang();
     }
 
     public void reload() {
         plugin.reloadConfig();
 
         config = plugin.getConfig();
-        langLoader = initLang();
+        messages = initLang();
     }
 
     @Contract(value = " -> new", pure = true)
-    private @NotNull LangLoader initLang() {
+    private @NotNull Messages initLang() {
         loadDefaultLang();
 
         String currentLang = getString(ConfigKey.LANG_FILE, "EN_us");
-        YamlFileHandle langConfig = YamlFileHandle.fromPath(plugin, "lang/" + currentLang + ".yml");
-
-        if (!langConfig.getFile().exists()) {
-            plugin.getLogger().log(Level.SEVERE, "[Lang] Couldn't load language! Invalid lang file. Using the default one -> EN_us");
-            langConfig = YamlFileHandle.fromPath(plugin, "lang/EN_us.yml");
-        }
-
-        plugin.getLogger().log(Level.INFO, "[Lang] Language loaded from file " + langConfig.getFile().getName());
-        return new LangLoader(plugin.getConfig(), langConfig.getConfig());
+        return Messages.initFromFile(plugin, plugin.getAdventure(), "lang/" + currentLang + ".yml");
     }
 
     private void loadDefaultLang() {
@@ -110,8 +98,8 @@ public class ConfigLoader {
 
     }
 
-    public LangLoader getLangLoader() {
-        return langLoader;
+    public Messages getMessages() {
+        return messages;
     }
 
     private void printInvalidValueWarning(@NotNull ConfigKey key, String defaultValue, boolean empty) {

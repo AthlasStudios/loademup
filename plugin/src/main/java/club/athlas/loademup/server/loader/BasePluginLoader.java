@@ -4,11 +4,11 @@ import club.athlas.loademup.LoadEmUp;
 import club.athlas.loademup.api.exceptions.PluginAlreadyLoadedException;
 import club.athlas.loademup.api.exceptions.PluginFileNotFoundException;
 import club.athlas.loademup.api.loader.PluginLoader;
-import club.athlas.loademup.api.loader.Simulator;
 import club.athlas.loademup.api.object.Dependency;
+import club.athlas.loademup.api.result.ClassLoaderValidationResult;
 import club.athlas.loademup.api.utils.FileUtils;
-import club.athlas.loademup.server.utils.ReflectionUtils;
-import club.athlas.loademup.server.utils.ThreadUtils;
+import club.athlas.loademup.utils.ReflectionUtils;
+import club.athlas.loademup.utils.ThreadUtils;
 import club.athlas.loademup.server.wrapper.WrappedInstanceManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -22,22 +22,24 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public abstract class BasePluginLoader implements PluginLoader {
 
     protected final LoadEmUp plugin;
     protected final PluginManager pluginManager;
-    protected final Simulator simulatedPluginLoader;
+
 
     protected BasePluginLoader(@NotNull LoadEmUp plugin, PluginManager pluginManager) {
         this.plugin = plugin;
         this.pluginManager = pluginManager;
-        this.simulatedPluginLoader = new SimulatedPluginLoader(this);
     }
 
     protected BasePluginLoader(@NotNull LoadEmUp plugin) {
@@ -45,7 +47,7 @@ public abstract class BasePluginLoader implements PluginLoader {
     }
 
     @Override
-    public Optional<Plugin> load(File file) throws InvalidPluginException, InvalidDescriptionException {
+    public Optional<Plugin> load(File file) throws InvalidPluginException, InvalidDescriptionException, PluginAlreadyLoadedException {
         if (isLoaded(file)) throw new PluginAlreadyLoadedException(file);
 
         Plugin loadedPlugin = pluginManager.loadPlugin(file);
@@ -72,7 +74,7 @@ public abstract class BasePluginLoader implements PluginLoader {
     }
 
     @Override
-    public Optional<Plugin> reload(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException {
+    public Optional<Plugin> reload(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException, PluginFileNotFoundException {
         if (getPluginFile(plugin).isEmpty()) throw new PluginFileNotFoundException(plugin);
 
         unload(plugin);
@@ -144,7 +146,7 @@ public abstract class BasePluginLoader implements PluginLoader {
 
     @Override
     public Optional<PluginDescriptionFile> getDescriptionFile(File file) {
-        if (FileUtils.isJarFile(file)) return Optional.empty();
+        if (!FileUtils.isJarFile(file)) return Optional.empty();
 
         try (JarFile jar = new JarFile(file)) {
             JarEntry entry = jar.getJarEntry("plugin.yml");
@@ -169,7 +171,7 @@ public abstract class BasePluginLoader implements PluginLoader {
             if (!(classLoader instanceof PluginClassLoader pluginClassLoader)) return Optional.empty();
 
             File file = ReflectionUtils.accessField(pluginClassLoader, "file");
-            if (file == null || !file.exists()) return Optional.empty();
+            if (file == null) return Optional.empty();
 
             return Optional.of(file);
 
@@ -180,8 +182,12 @@ public abstract class BasePluginLoader implements PluginLoader {
 
     @Override
     public Optional<File> getPluginFile(String name) {
-        File pluginFile = new File(getPluginsFolder(), name);
-        return pluginFile.exists() ? Optional.of(pluginFile) : Optional.empty();
+        try {
+            File pluginFile = new File(getPluginsFolder(), name);
+            return pluginFile.exists() ? Optional.of(pluginFile) : Optional.empty();
+        } catch (NullPointerException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -194,12 +200,41 @@ public abstract class BasePluginLoader implements PluginLoader {
 
     @Override
     public @NotNull File getPluginsFolder() {
-        return plugin.getDataFolder().getParentFile();
+        return plugin.getServer().getPluginsFolder();
     }
 
     @Override
-    public @NotNull Simulator getSimulatedPluginLoader() {
-        return simulatedPluginLoader;
+    public ClassLoaderValidationResult validateClassLoader(File file) {
+        Optional<PluginDescriptionFile> descOpt = getDescriptionFile(file);
+
+        if (descOpt.isEmpty()) return ClassLoaderValidationResult.MISSING_PLUGIN_DESCRIPTION;
+        PluginDescriptionFile desc = descOpt.get();
+
+        try (URLClassLoader testLoader = new URLClassLoader(
+                new URL[] { file.toURI().toURL() }, Bukkit.class.getClassLoader())) {
+
+            Class<?> mainClass = testLoader.loadClass(desc.getMain());
+
+            if (!Plugin.class.isAssignableFrom(mainClass)) {
+                return ClassLoaderValidationResult.INVALID_MAIN_CLASS;
+            }
+
+            try {
+                mainClass.getDeclaredConstructor();
+            } catch (NoSuchMethodException e) {
+                return ClassLoaderValidationResult.INVALID_MAIN_CLASS;
+            }
+
+        } catch (MalformedURLException e) {
+            return ClassLoaderValidationResult.FILE_NOT_FOUND;
+        } catch (ClassNotFoundException e) {
+            return ClassLoaderValidationResult.NO_MAIN_CLASS;
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Failed to close test class loader", e);
+            return ClassLoaderValidationResult.UNEXPECTED_ERROR;
+        }
+
+        return ClassLoaderValidationResult.VALID;
     }
 
     protected void syncCommands() {

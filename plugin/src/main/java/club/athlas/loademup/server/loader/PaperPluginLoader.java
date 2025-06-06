@@ -30,6 +30,16 @@ public class PaperPluginLoader extends BasePluginLoader {
         }
     }
 
+    public PaperPluginLoader(LoadEmUp plugin, PaperPluginManagerImpl paperPluginManagerImpl) {
+        super(plugin, paperPluginManagerImpl);
+
+        try {
+            this.instanceManager = new PaperPluginInstanceManager(paperPluginManagerImpl);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void unload(Plugin plugin) {

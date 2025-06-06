@@ -2,4 +2,3 @@ generic:
   debug: false
   environment: PRODUCTION # OR DEVELOPMENT
   lang: EN_us
-  prefix: "&8&l(&e&lLoadEmUp&8&l) &r"

@@ -1,6 +1,6 @@
 package club.athlas.loademup.server.wrapper;
 
-import club.athlas.loademup.server.utils.ReflectionUtils;
+import club.athlas.loademup.utils.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;

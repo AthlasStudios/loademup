@@ -1,6 +1,7 @@
 package club.athlas.loademup.server.commands.sub;
 
 import club.athlas.loademup.LoadEmUp;
+import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.object.PluginData;
@@ -39,6 +40,8 @@ public class InfoCommand extends SubCommand<LoadEmUp> {
         );
 
         executes((sender, args) -> {
+            withPermissions(LEUPermission.INFO_COMMAND);
+
             String pluginName = (String) args.get("plugin");
 
             loader.getPlugin(pluginName).ifPresentOrElse(

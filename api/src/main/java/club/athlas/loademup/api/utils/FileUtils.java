@@ -5,12 +5,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.jar.JarFile;
 
 public class FileUtils {
 
     @Contract(pure = true)
     public static boolean isJarFile(@NotNull File file) {
-        return file.getName().endsWith(".jar");
+        return file.getName().toLowerCase().endsWith(".jar");
+    }
+
+    public static boolean validateJarIntegrity(File pluginFile) {
+        try (JarFile jarFile = new JarFile(pluginFile)) {
+            jarFile.entries();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

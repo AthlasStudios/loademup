@@ -14,7 +14,10 @@ dependencies {
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
 
     implementation("me.gurwi:CommandFramework:1.0.3")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
+    implementation("net.kyori:adventure-platform-bukkit:4.4.0")
+    implementation("net.kyori:adventure-text-minimessage:4.21.0")
+//    implementation("org.mockito:mockito-core:5.12.0")
+//    implementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.0.0")
 }
 
 tasks {
@@ -37,4 +40,12 @@ tasks {
     runServer {
         minecraftVersion("1.21.5")
     }
+}
+
+tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
+    javaLauncher = javaToolchains.launcherFor {
+        vendor = JvmVendorSpec.JETBRAINS
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }

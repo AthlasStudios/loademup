@@ -1,4 +1,4 @@
-package club.athlas.loademup.server.utils;
+package club.athlas.loademup.utils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

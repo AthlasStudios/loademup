@@ -1,4 +1,4 @@
-package club.athlas.loademup.server.utils;
+package club.athlas.loademup.utils;
 
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;

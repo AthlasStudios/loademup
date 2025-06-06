@@ -1,0 +1,56 @@
+vars:
+  primary: "<#00C8FF>"      # Bright aqua
+  secondary: "<#A0A0A0>"    # Soft gray
+  error: "<#FF4B4B>"        # Warm red
+  success: "<#4CFF7A>"      # Fresh green
+
+prefix: ""
+
+pluginNotFound: " <error>⚠ No plugin found named <name>."
+jarNotFound: " <error>⚠ Couldn't find any .jar file named <file>."
+invalidPluginJar: " <error>⚠ <file> is invalid or corrupt plugin JAR."
+
+missingPluginDescription: " <error>⚠ Plugin JAR is missing a <bold>plugin.yml</bold> description section."
+missingPluginName: " <error>⚠ Plugin name is missing or empty in plugin.yml."
+missingMainClass: " <error>⚠ Main class is missing or empty in plugin.yml."
+missingPluginVersion: " <error>⚠ Plugin version is missing or empty in plugin.yml."
+missingDependencies: " <error>❌ Missing required dependencies: <dependencies>."
+missingNewJarFile: " <error>⚠ Couldn't find a new JAR file for <plugin:name>. Make sure it's in the plugins folder."
+
+noMainClass: " <error>⚠ Plugin JAR does not specify a <bold>Main-Class</bold> in its manifest."
+invalidMainClass: " <error>⚠ Plugin main class is invalid or could not be loaded."
+unexpectedError: " <error>❌ An unexpected error occurred. Check the console for details."
+
+lookingForNewJar: " <primary>🔍 Looking for a new JAR file for <plugin:name>..."
+lookingForPluginYML: " <primary>🔍 Looking for valid plugin.yml in <file>..."
+startingIntegrityCheck: " <primary>🧪 Starting integrity check on <file>..."
+checkingDependencies: " <primary>🛠 Checking plugin dependencies..."
+
+tryingToReload: " <primary>🔄 Reloading <plugin:name> <secondary>v<plugin:version>..."
+pluginReloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>reloaded in <time:millis>ms."
+pluginReloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to reload <plugin:name>. Hover for details or check console."
+
+tryingToLoad: " <primary>⏳ Loading <plugin:name> <secondary>v<plugin:version>..."
+pluginLoaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>loaded in <time:millis>ms."
+pluginLoadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to load <plugin:name>. Hover for details or check console."
+pluginLoadedButDisabled: " <error>⚠ <plugin:name> <secondary>v<plugin:version> <error>loaded but automatically disabled itself in <time:millis>ms. Maybe this plugin doesn’t support plugin reloaders."
+pluginAlreadyLoaded: " <secondary>ℹ <plugin:name> is already loaded."
+
+tryingToUnload: " <primary>⏳ Unloading <plugin:name> <secondary>v<plugin:version>..."
+pluginUnloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>unloaded in <time:millis>ms."
+pluginUnloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to unload <plugin:name>. Hover for details or check console."
+
+tryingToEnable: " <primary>⏳ Enabling <plugin:name> <secondary>v<plugin:version>..."
+pluginEnabled: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>enabled in <time:millis>ms."
+pluginEnableFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to enable <plugin:name>. Hover for details or check console."
+pluginAlreadyEnabled: " <secondary>ℹ <plugin:name> is already enabled."
+
+tryingToDisable: "<primary>⏳ Disabling <plugin:name> <secondary>v<plugin:version>..."
+pluginDisabled: "<success>✔ <plugin:name> <secondary>v<plugin:version> <success>disabled in <time:millis>ms."
+pluginDisableFail: "<hover:show_text:'<error><error_msg>'><error>❌ Failed to disable <plugin:name>. Hover for details or check console."
+pluginAlreadyDisabled: "<secondary>ℹ <plugin:name> is already disabled."
+
+help:
+  header: "\n <gradient:#00C8FF:#0088FF><bold>LoadEmUp</bold></gradient> <dark_gray><bold>›</bold></dark_gray> <#A0A0A0><italic>Running on</italic></#A0A0A0> <build>\n\n"
+  commandFormat: " <#4FB2FF>»</#4FB2FF> <hover:show_text:'<#A0A0A0>Click to autocomplete this command'><click:suggest_command:'/<helpvalue:command>'><#00C8FF>/<helpvalue:command></#00C8FF></click></hover> <#A0A0A0>–</#A0A0A0> <white><helpvalue:description></white>"
+  footer: "\n\n <#A0A0A0>Questions?</#A0A0A0> <hover:show_text:'<#A0A0A0>Click to join our Discord server'><click:open_url:'https://dev.athlas.club'><#00C8FF><underlined>Join us on Discord</underlined></#00C8FF></click></hover><#A0A0A0></#A0A0A0>\n"

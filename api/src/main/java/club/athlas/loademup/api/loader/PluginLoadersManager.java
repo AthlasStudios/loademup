@@ -1,6 +1,7 @@
 package club.athlas.loademup.api.loader;
 
 import club.athlas.loademup.api.platform.Platform;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -11,6 +12,6 @@ public interface PluginLoadersManager {
 
     Map<Platform, PluginLoader> getLoaders();
 
-    PluginLoader findBestLoader();
+    @Nullable PluginLoader findBestLoader();
 
 }

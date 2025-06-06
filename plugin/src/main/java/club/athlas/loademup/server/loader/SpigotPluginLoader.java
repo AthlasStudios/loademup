@@ -25,6 +25,16 @@ public class SpigotPluginLoader extends BasePluginLoader {
         }
     }
 
+    public SpigotPluginLoader(LoadEmUp plugin, SimplePluginManager pluginManager) {
+        super(plugin, pluginManager);
+
+        try {
+            this.instanceManager = new SpigotPluginInstanceManager(pluginManager);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void unload(Plugin plugin) {
         disablePlugin(plugin);
@@ -40,9 +50,7 @@ public class SpigotPluginLoader extends BasePluginLoader {
             getDependencies(checked).stream()
                     .filter(dependency -> dependency.name().equals(targetName))
                     .findFirst()
-                    .ifPresent(dependency -> {
-                        dependentPlugins.add(new Dependency(checked.getName(), dependency.required(), DefPlatform.SPIGOT));
-                    });
+                    .ifPresent(dependency -> dependentPlugins.add(new Dependency(checked.getName(), dependency.required(), DefPlatform.SPIGOT)));
         }
 
         return dependentPlugins;

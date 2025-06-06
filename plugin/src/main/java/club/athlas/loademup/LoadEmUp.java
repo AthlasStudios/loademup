@@ -6,23 +6,27 @@ import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.loader.PluginLoadersManager;
 import club.athlas.loademup.api.platform.DefPlatform;
 import club.athlas.loademup.config.ConfigLoader;
+import club.athlas.loademup.config.Messages;
+import club.athlas.loademup.integration.ModrinthUpdateChecker;
 import club.athlas.loademup.server.commands.LEUMainCommand;
 import club.athlas.loademup.server.loader.LoadersManager;
 import club.athlas.loademup.server.loader.PaperPluginLoader;
 import club.athlas.loademup.server.loader.SpigotPluginLoader;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
-    private final ConfigLoader configLoader = new ConfigLoader(this);
     private final PluginLoadersManager loadersManager = new LoadersManager();
 
     private Environment environment = Environment.PRODUCTION;
 
-    private BukkitAudiences adventure;
     private PluginLoader pluginLoader;
+    private BukkitAudiences adventure;
+    private ConfigLoader configLoader;
+    private ModrinthUpdateChecker updateChecker;
 
     @Override
     public void onLoad() {
@@ -33,19 +37,35 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
     @Override
     public void onEnable() {
-        configLoader.load();
-
-        this.adventure = BukkitAudiences.create(this);
         this.pluginLoader = loadersManager.findBestLoader();
+        this.adventure = BukkitAudiences.create(this);
+        this.configLoader = new ConfigLoader(this);
+        this.updateChecker = new ModrinthUpdateChecker(this, "inventorytracker"); // TODO -> CHANGE
+
+        if (pluginLoader == null) {
+            getLogger().severe("No plugin loader found!");
+            Bukkit.getPluginManager().disablePlugin(this);
+
+            return;
+        }
 
         getLogger().info("Initialized Plugin Loader for the " + DefPlatform.getCurrentPlatform().getIdentifier() + " platform.");
 
+        configLoader.load();
+
         new LEUMainCommand(this).get().register(this);
+
+        updateChecker.cacheLatestVersion();
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public void reload() {
+        configLoader.reload();
+        updateChecker.cacheLatestVersion();
     }
 
     @Override
@@ -67,8 +87,16 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
         return configLoader;
     }
 
+    public Messages getMessages() {
+        return configLoader.getMessages();
+    }
+
     public @NotNull BukkitAudiences getAdventure() {
         return adventure;
+    }
+
+    public ModrinthUpdateChecker getUpdateChecker() {
+        return updateChecker;
     }
 
 }
