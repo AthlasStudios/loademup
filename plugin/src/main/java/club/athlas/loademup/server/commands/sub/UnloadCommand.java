@@ -13,11 +13,12 @@ import me.gurwi.commandframework.arguments.StringArgument;
 import me.gurwi.commandframework.usable.SubCommand;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -56,10 +57,7 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
 
                         plugin.getMessages().send(sender, LangKey.CHECKING_DEPENDENTS, placeholder);
 
-                        List<String> dependants = loader.getDependents(targetPlugin).stream()
-                                .filter(Dependency::isLoaded)
-                                .map(Dependency::name)
-                                .toList();
+                        List<String> dependants = getAllDependentNames(loader, targetPlugin);
 
                         if (!dependants.isEmpty() && !CommandCommons.hasArgFlags(args, "--force")) {
                             plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_BLOCKED, placeholder, TagResolverUtils.listPlaceholder("dependants", dependants));
@@ -95,6 +93,34 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
         } catch (Exception e) {
             plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
             plugin.getLogger().log(Level.WARNING, "Failed to unload plugin " + targetPlugin.getName(), e);
+        }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String @NotNull [] args) {
+        if (args.length <= 1) return super.onTabComplete(sender, command, alias, args);
+        return List.of("--force");
+    }
+
+    private @NotNull List<String> getAllDependentNames(PluginLoader loader, Plugin rootPlugin) {
+        List<String> result = new ArrayList<>();
+        Set<String> visited = new HashSet<>();
+        collectDependentNames(loader, rootPlugin, visited, result);
+
+        result.remove(rootPlugin.getName());
+        return result;
+    }
+
+    private void collectDependentNames(@NotNull PluginLoader loader, Plugin plugin, Set<String> visited, List<String> result) {
+        for (Dependency dependant : loader.getDependents(plugin)) {
+            if (!dependant.isLoaded()) continue;
+
+            String name = dependant.name();
+
+            if (visited.add(name)) {
+                result.add(name);
+                dependant.getPlugin().ifPresent(depPlugin -> collectDependentNames(loader, depPlugin, visited, result));
+            }
         }
     }
 
