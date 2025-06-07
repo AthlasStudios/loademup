@@ -82,6 +82,15 @@ public abstract class BasePluginLoader implements PluginLoader {
     }
 
     @Override
+    public Optional<Plugin> reloadFromCurrentJar(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException, PluginFileNotFoundException {
+        Optional<File> currentJar = getPluginCurrentJarInst(plugin);
+        if (currentJar.isEmpty()) throw new PluginFileNotFoundException(plugin);
+
+        unload(plugin);
+        return load(currentJar.get());
+    }
+
+    @Override
     public boolean isLoaded(File file) {
         return getDescriptionFile(file)
                 .map(description -> pluginManager.getPlugin(description.getName()) != null)
@@ -158,6 +167,24 @@ public abstract class BasePluginLoader implements PluginLoader {
                 return Optional.empty();
             }
         } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<File> getPluginCurrentJarInst(Plugin plugin) {
+        try {
+            URL jarUrl = plugin.getClass()
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation();
+
+            if (jarUrl == null) return Optional.empty();
+
+            return Optional.of(new File(jarUrl.toURI()));
+
+        } catch (Exception e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to get current jar", e);
             return Optional.empty();
         }
     }

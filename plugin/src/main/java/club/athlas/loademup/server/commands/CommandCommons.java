@@ -6,6 +6,7 @@ import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.utils.LEUUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.utils.TagResolverUtils;
+import me.gurwi.commandframework.arguments.CommandArguments;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -13,6 +14,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,6 +96,11 @@ public class CommandCommons {
 
     public static boolean sendUnsupportedAction(@NotNull LoadEmUp plugin, LEUAction action, Plugin target, CommandSender sender) {
         return plugin.getLoader().getPluginFile(target).map(file -> sendUnsupportedAction(plugin, action, file, sender)).orElse(true);
+    }
+
+    public static boolean hasArgFlags(@NotNull CommandArguments args, String... flags) {
+        return Arrays.stream(args.getRawArgs())
+                .anyMatch(arg -> Arrays.asList(flags).contains(arg));
     }
 
 }

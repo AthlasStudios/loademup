@@ -45,10 +45,11 @@ public class HelpCommand extends SubCommand<LoadEmUp> {
         return List.of(
                 new HelpValue("loademup help", "View this message", new StartsWithPermission(LEUPermission.COMMAND_PREFIX)),
                 new HelpValue("loademup load <plugin>", "Load a new plugin.", LEUPermission.LOAD_COMMAND),
-                new HelpValue("loademup unload <plugin> [<unload-deps>]", "Unload a plugin.", LEUPermission.UNLOAD_COMMAND),
-                new HelpValue("loademup reload <plugin>", "Reload a plugin.", LEUPermission.RELOAD_COMMAND),
+                new HelpValue("loademup unload <plugin> [flags]", "Unload a plugin.", LEUPermission.UNLOAD_COMMAND),
+                new HelpValue("loademup reload <plugin> [flags]", "Reload a plugin.", LEUPermission.RELOAD_COMMAND),
                 new HelpValue("loademup enable <plugin>", "Enable a plugin", LEUPermission.ENABLE_COMMAND),
                 new HelpValue("loademup enable <plugin>", "Disable a plugin", LEUPermission.DISABLE_COMMAND),
+                new HelpValue("loademup scan <plugin>", "Disable a plugin", LEUPermission.SCAN_COMMAND),
                 new HelpValue("loademup info <plugin>", "Get a plugin info.", LEUPermission.INFO_COMMAND)
         );
     }

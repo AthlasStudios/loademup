@@ -18,6 +18,8 @@ missingPluginVersion: " <error>⚠ Plugin version is missing or empty in plugin.
 missingDependencies: " <error>❌ Missing required dependencies: <dependencies>."
 missingNewJarFile: " <error>⚠ Couldn't find a new JAR file for <plugin:name>. Make sure it's in the plugins folder."
 
+# SCAN STUFF
+
 noMainClass: " <error>⚠ Plugin JAR does not specify a <bold>Main-Class</bold> in its manifest."
 invalidMainClass: " <error>⚠ Plugin main class is invalid or could not be loaded."
 unexpectedError: " <error>❌ An unexpected error occurred. Check the console for details."
@@ -28,9 +30,7 @@ startingIntegrityCheck: " <primary>🧪 Starting integrity check on <file>..."
 checkingDependencies: " <primary>🛠 Checking plugin dependencies..."
 checkingDependants: " <primary>🛠 Checking for dependant plugins of <plugin:name>..."
 
-tryingToReload: " <primary>🔄 Reloading <plugin:name> <secondary>v<plugin:version>..."
-pluginReloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>reloaded in <time:millis>ms."
-pluginReloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to reload <plugin:name>. Hover for details or check console."
+# LOAD
 
 tryingToLoad: " <primary>⏳ Loading <plugin:name> <secondary>v<plugin:version>..."
 pluginLoaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>loaded in <time:millis>ms."
@@ -38,34 +38,57 @@ pluginLoadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to loa
 pluginLoadedButDisabled: " <error>⚠ <plugin:name> <secondary>v<plugin:version> <error>loaded but automatically disabled itself in <time:millis>ms. Maybe this plugin doesn’t support plugin reloaders."
 pluginAlreadyLoaded: " <secondary>ℹ <plugin:name> is already loaded."
 
+# UNLOAD
+
 tryingToUnload: " <primary>⏳ Unloading <plugin:name> <secondary>v<plugin:version>..."
 pluginUnloadBlocked: " <error>⚠ Unable to unload <plugin:name>. Found the following dependants: <secondary><dependants>."
 pluginUnloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>unloaded in <time:millis>ms."
 pluginUnloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to unload <plugin:name>. Hover for details or check console."
+
+# RELOAD
+
+tryingToReload: " <primary>🔄 Reloading <plugin:name> <secondary>v<plugin:version>..."
+pluginReloadBlocked: " <error>⚠ Unable to reload <plugin:name>. Found the following dependants and sub-dependants: <secondary><dependants>."
+pluginReloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>reloaded in <time:millis>ms."
+reloadingDependants: " <primary>🔁 Reloading <count> dependant(s) plugins of <plugin:name>..."
+pluginReloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to reload <plugin:name>. Hover for details or check console."
+pluginDependantReloaded: " <success>✔ <dependant:name> <secondary>v<dependant:version> <success>reloaded in <time:millis>ms (dependant)."
+pluginDependantReloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to reload dependant plugin <dependant:name>. Hover for details or check console."
+pluginDependantsReloaded: " <success>✔ Successfully reloaded <count> dependant(s) in <time:millis>ms."
+dependantReloadUnsupported: " <error>⚠ Unable to reload dependant plugin <dependant:name>: reload not supported. <secondary><italic>Skipping..."
+dependantCurrentJarNotFound: " <error>⚠ Unable to locate the current JAR file for dependant plugin <dependant:name>. <secondary><italic>Skipping..."
+
+# ENABLE
 
 tryingToEnable: " <primary>⏳ Enabling <plugin:name> <secondary>v<plugin:version>..."
 pluginEnabled: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>enabled in <time:millis>ms."
 pluginEnableFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to enable <plugin:name>. Hover for details or check console."
 pluginAlreadyEnabled: " <secondary>ℹ <plugin:name> is already enabled."
 
+# DISABLE
+
 tryingToDisable: "<primary>⏳ Disabling <plugin:name> <secondary>v<plugin:version>..."
 pluginDisabled: "<success>✔ <plugin:name> <secondary>v<plugin:version> <success>disabled in <time:millis>ms."
 pluginDisableFail: "<hover:show_text:'<error><error_msg>'><error>❌ Failed to disable <plugin:name>. Hover for details or check console."
 pluginAlreadyDisabled: "<secondary>ℹ <plugin:name> is already disabled."
 
+# VT SCAN
+
 virusScanStart: " <primary>⚡ Starting VirusTotal scan for suspicious content..."
 virusScanClear: " <success>✔ VirusTotal scan complete. No threats detected."
 
 virusScanThreatsFound: |-
-  /n
-  <error>❗ VirusTotal scan complete. <detections:count> threats detected:
+  
+  <error> ❗ VirusTotal scan complete. <detections:count> threats detected:
   <list>
-  /n
-virusScanResultFormat: "• <gold><detection:type></gold> (<#FF4B4B><detection:severity></#FF4B4B>)"
+
+virusScanResultFormat: " • <yellow><detection:engine> <gold><detection:type></gold> (<#FF4B4B><detection:severity></#FF4B4B>)"
 
 virusScanUnableToScan: " <error>❌ Unable to perform VirusTotal scan at this time."
 virusScanNoResult: " <error>⚠ VirusTotal scan did not return a result."
 virusScanServiceDisabled: " <error>⚠ VirusTotal scanning service is disabled or still loading."
+
+# OTHER
 
 help:
   header: "\n <gradient:#00C8FF:#0088FF><bold>LoadEmUp</bold></gradient> <dark_gray><bold>›</bold></dark_gray> <#A0A0A0><italic>Running on</italic></#A0A0A0> <build>\n\n"

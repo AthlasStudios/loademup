@@ -9,7 +9,6 @@ import club.athlas.loademup.api.object.PluginData;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
 import club.athlas.loademup.utils.TagResolverUtils;
-import me.gurwi.commandframework.arguments.BooleanArgument;
 import me.gurwi.commandframework.arguments.StringArgument;
 import me.gurwi.commandframework.usable.SubCommand;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -44,15 +43,8 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
                         )
         );
 
-        withOptionalArguments(
-                new BooleanArgument("unload-deps")
-        );
-
         executes((sender, args) -> {
             String pluginName = (String) args.get("plugin");
-            boolean unloadDeps = args.getOptional("unload-deps")
-                    .map(o -> (boolean) o)
-                    .orElse(false);
 
             sender.sendMessage("\n");
 
@@ -69,7 +61,7 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
                                 .map(Dependency::name)
                                 .toList();
 
-                        if (!dependants.isEmpty() && !unloadDeps) {
+                        if (!dependants.isEmpty() && !CommandCommons.hasArgFlags(args, "--force")) {
                             plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_BLOCKED, placeholder, TagResolverUtils.listPlaceholder("dependants", dependants));
                             return;
                         }

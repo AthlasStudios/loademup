@@ -26,10 +26,6 @@ public enum LangKey {
     CHECKING_DEPENDENCIES("checkingDependencies"),
     CHECKING_DEPENDENTS("checkingDependants"),
 
-    PLUGIN_RELOAD_START("tryingToReload"),
-    PLUGIN_RELOADED("pluginReloaded"),
-    PLUGIN_RELOAD_FAIL("pluginReloadFail"),
-
     PLUGIN_LOAD_START("tryingToLoad"),
     PLUGIN_LOADED("pluginLoaded"),
     PLUGIN_LOAD_FAIL("pluginLoadFail"),
@@ -40,6 +36,17 @@ public enum LangKey {
     PLUGIN_UNLOAD_BLOCKED("pluginUnloadBlocked"),
     PLUGIN_UNLOADED("pluginUnloaded"),
     PLUGIN_UNLOAD_FAIL("pluginUnloadFail"),
+
+    PLUGIN_RELOAD_START("tryingToReload"),
+    PLUGIN_RELOAD_BLOCKED("pluginReloadBlocked"),
+    PLUGIN_RELOADED("pluginReloaded"),
+    PLUGIN_RELOAD_FAIL("pluginReloadFail"),
+    RELOADING_DEPENDANDTS("reloadingDependants"),
+    PLUGIN_DEPENDANT_RELOADED("pluginDependantReloaded"),
+    PLUGIN_DEPENDANT_RELOAD_FAIL("pluginDependantReloadFail"),
+    PLUGIN_DEPENDANTS_RELOAD_FINISH("pluginDependantsReloaded"),
+    DEPENDAND_RELOAD_UNSUPPORTED("dependantReloadUnsupported"),
+    DEPENDAND_CURRENT_JAR_NOT_FOUND("dependantCurrentJarNotFound"),
 
     PLUGIN_ENABLE_START("tryingToEnable"),
     PLUGIN_ENABLED("pluginEnabled"),

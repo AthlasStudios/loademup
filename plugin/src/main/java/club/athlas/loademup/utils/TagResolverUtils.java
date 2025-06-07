@@ -15,9 +15,9 @@ import java.util.concurrent.TimeUnit;
 
 public class TagResolverUtils {
 
-    @Contract("_ -> new")
-    public static @NotNull TagResolver resolverFrom(PluginData data) {
-        return TagResolver.resolver("plugin", (args, ctx) -> {
+    @Contract("_, _ -> new")
+    public static @NotNull TagResolver resolverFrom(PluginData data, @TagPattern String placeholder) {
+        return TagResolver.resolver(placeholder, (args, ctx) -> {
             final String param = args.popOr("param expected").value();
             String value = switch (param) {
                   case "name" -> data.name();
@@ -30,6 +30,11 @@ public class TagResolverUtils {
             if (value == null) value = "null";
             return Tag.preProcessParsed(value);
         });
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull TagResolver resolverFrom(PluginData data) {
+        return resolverFrom(data, "plugin");
     }
 
     @Contract("_ -> new")

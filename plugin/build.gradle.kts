@@ -13,7 +13,7 @@ dependencies {
     // DEPENDENCIES
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
 
-    implementation("me.gurwi:CommandFramework:1.0.3")
+    implementation("me.gurwi:CommandFramework:1.0.4")
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
     implementation("net.kyori:adventure-text-minimessage:4.21.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

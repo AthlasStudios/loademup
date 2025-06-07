@@ -25,6 +25,8 @@ public interface PluginLoader {
 
     Optional<Plugin> reload(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException, PluginFileNotFoundException;
 
+    Optional<Plugin> reloadFromCurrentJar(Plugin plugin) throws InvalidPluginException, InvalidDescriptionException, PluginFileNotFoundException;
+
     boolean isLoaded(File file);
 
     void disablePlugin(@NotNull Plugin plugin);
@@ -52,6 +54,8 @@ public interface PluginLoader {
     List<Dependency> getDependencies(@NotNull File file);
 
     Optional<PluginDescriptionFile> getDescriptionFile(File file);
+
+    Optional<File> getPluginCurrentJarInst(Plugin plugin);
 
     Optional<File> getPluginFile(Plugin plugin);
 

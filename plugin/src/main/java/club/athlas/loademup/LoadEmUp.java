@@ -48,7 +48,7 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
         this.adventure = BukkitAudiences.create(this);
         this.configLoader = new ConfigLoader(this).load();
         this.virusTotalIntegration = initVirusTotalClient();
-        this.updateChecker = new ModrinthUpdateChecker(this, "inventorytracker"); // TODO -> CHANGE
+        this.updateChecker = new ModrinthUpdateChecker(this, "loademup");
 
         if (pluginLoader == null) {
             getLogger().severe("No plugin loader found!");

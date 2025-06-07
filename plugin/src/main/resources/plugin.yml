@@ -6,6 +6,8 @@ api-version: '1.21'
 description: "Advanced plugin reloader for Spigot — smart, safe, and production-ready."
 website: "https://athlas.club"
 
+depend: [ "InventoryTracker" ]
+
 commands:
   loademup:
     description: Main Command
