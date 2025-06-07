@@ -6,7 +6,6 @@ import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.object.PluginData;
-import club.athlas.loademup.api.utils.LEUUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
 import club.athlas.loademup.utils.TagResolverUtils;
