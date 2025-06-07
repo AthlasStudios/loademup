@@ -16,6 +16,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class LoadCommand extends SubCommand<LoadEmUp> {
@@ -46,7 +47,7 @@ public class LoadCommand extends SubCommand<LoadEmUp> {
             withPermissions(LEUPermission.LOAD_COMMAND);
 
             String jarFile = (String) args.get("plugin");
-            boolean reloadDependants = args.getOptional("reload-deps")
+            boolean force = args.getOptional("reload-deps")
                     .map(o -> (boolean) o)
                     .orElse(false);
 
@@ -90,6 +91,7 @@ public class LoadCommand extends SubCommand<LoadEmUp> {
 
                                             if (loaded.isEnabled()) {
                                                 plugin.getMessages().send(sender, LangKey.PLUGIN_LOADED, placeholder, TagResolverUtils.resolverFromTime(time));
+                                                // ASK TO RELOAD SOFT DEPENDS TOO
                                                 return;
                                             }
 
@@ -98,7 +100,7 @@ public class LoadCommand extends SubCommand<LoadEmUp> {
 
                                     } catch (Exception e) {
                                         plugin.getMessages().send(sender, LangKey.PLUGIN_LOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
-                                        e.printStackTrace();
+                                        plugin.getLogger().log(Level.WARNING, "Unable to load plugin " + desc.getName(), e);
                                     }
                                 },
 

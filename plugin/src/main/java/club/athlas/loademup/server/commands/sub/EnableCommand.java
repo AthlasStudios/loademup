@@ -14,6 +14,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.plugin.Plugin;
 
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class EnableCommand extends SubCommand<LoadEmUp> {
@@ -64,7 +65,7 @@ public class EnableCommand extends SubCommand<LoadEmUp> {
                             plugin.getMessages().send(sender, LangKey.PLUGIN_ENABLED, placeholder, TagResolverUtils.resolverFromTime(end));
                         } catch (Exception e) {
                             plugin.getMessages().send(sender, LangKey.PLUGIN_ENABLE_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
-                            e.printStackTrace();
+                            plugin.getLogger().log(Level.WARNING, "Failed to enable plugin " + targetPlugin.getName(), e);
                         }
                     },
 

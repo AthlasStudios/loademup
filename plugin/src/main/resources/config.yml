@@ -4,7 +4,6 @@ generic:
 
 virus-scanner:
   enabled: false
-  run-preload: false
   vt-key: "" # VT KEY
 
 plugin-rules:

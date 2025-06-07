@@ -16,6 +16,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.plugin.Plugin;
 
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ReloadCommand extends SubCommand<LoadEmUp> {
@@ -95,7 +96,7 @@ public class ReloadCommand extends SubCommand<LoadEmUp> {
                                                     loader.unload(targetPlugin);
                                                 } catch (Exception e) {
                                                     plugin.getMessages().send(sender, LangKey.PLUGIN_RELOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
-                                                    e.printStackTrace();
+                                                    plugin.getLogger().log(Level.WARNING, "Failed to reload plugin " + targetPlugin.getName(), e);
                                                 }
 
                                                 try {
@@ -114,7 +115,7 @@ public class ReloadCommand extends SubCommand<LoadEmUp> {
 
                                                 } catch (Exception e) {
                                                     plugin.getMessages().send(sender, LangKey.PLUGIN_RELOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
-                                                    e.printStackTrace();
+                                                    plugin.getLogger().log(Level.WARNING, "Failed to reload plugin " + targetPlugin.getName(), e);
                                                 }
 
                                             },

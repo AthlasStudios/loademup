@@ -19,6 +19,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class UnloadCommand extends SubCommand<LoadEmUp> {
@@ -101,7 +102,7 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
             plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOADED, placeholder, TagResolverUtils.resolverFromTime(time));
         } catch (Exception e) {
             plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
-            e.printStackTrace();
+            plugin.getLogger().log(Level.WARNING, "Failed to unload plugin " + targetPlugin.getName(), e);
         }
     }
 
