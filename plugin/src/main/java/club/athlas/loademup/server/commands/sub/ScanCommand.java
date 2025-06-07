@@ -66,7 +66,7 @@ public class ScanCommand extends SubCommand<LoadEmUp> {
                                                 return;
                                             }
 
-                                            List<VTAnalysisResult.AVResult> detections = vtAnalysisResult.detections();
+                                            List<VTAnalysisResult.AVResult> detections = vtAnalysisResult.results();
                                             TagResolver[] placeholders = {
                                                     Placeholder.component("list", getDetectionsList(detections)),
                                                     TagResolverUtils.resolverFrom(vtAnalysisResult)

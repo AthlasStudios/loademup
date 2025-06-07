@@ -42,7 +42,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.5")
+        minecraftVersion("1.21.3")
     }
 }
 
@@ -51,5 +51,6 @@ tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
         vendor = JvmVendorSpec.JETBRAINS
         languageVersion = JavaLanguageVersion.of(21)
     }
+
     jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }

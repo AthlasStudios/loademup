@@ -53,7 +53,7 @@ public class TagResolverUtils {
             final String param = args.popOr("param expected").value();
             String value = switch (param) {
                 case "status" -> avResult.status();
-                case "amount" -> String.valueOf(avResult.detections().size());
+                case "count" -> String.valueOf(avResult.detections().size());
                 default -> "<red>invalid param";
             };
 
