@@ -9,7 +9,6 @@ import club.athlas.loademup.api.utils.FileUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
 import club.athlas.loademup.utils.TagResolverUtils;
-import me.gurwi.commandframework.arguments.BooleanArgument;
 import me.gurwi.commandframework.arguments.StringArgument;
 import me.gurwi.commandframework.usable.SubCommand;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -41,15 +40,8 @@ public class ReloadCommand extends SubCommand<LoadEmUp> {
                         )
         );
 
-        withOptionalArguments(
-                new BooleanArgument("reload-deps")
-        );
-
         executes((sender, args) -> {
             String pluginName = (String) args.get("plugin");
-            boolean reloadDependants = args.getOptional("reload-deps")
-                    .map(o -> (boolean) o)
-                    .orElse(false);
 
             sender.sendMessage("\n");
 
@@ -95,7 +87,7 @@ public class ReloadCommand extends SubCommand<LoadEmUp> {
                                                     plugin.getMessages().send(sender, LangKey.PLUGIN_UNLOAD_START, updatedPluginDataPlaceholder);
                                                     loader.unload(targetPlugin);
                                                 } catch (Exception e) {
-                                                    plugin.getMessages().send(sender, LangKey.PLUGIN_RELOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
+                                                    plugin.getMessages().send(sender, LangKey.PLUGIN_RELOAD_FAIL, updatedPluginDataPlaceholder, Placeholder.parsed("error_msg", e.getMessage()));
                                                     plugin.getLogger().log(Level.WARNING, "Failed to reload plugin " + targetPlugin.getName(), e);
                                                 }
 
@@ -114,7 +106,7 @@ public class ReloadCommand extends SubCommand<LoadEmUp> {
                                                     });
 
                                                 } catch (Exception e) {
-                                                    plugin.getMessages().send(sender, LangKey.PLUGIN_RELOAD_FAIL, Placeholder.parsed("error_msg", e.getMessage()));
+                                                    plugin.getMessages().send(sender, LangKey.PLUGIN_RELOAD_FAIL, updatedPluginDataPlaceholder, Placeholder.parsed("error_msg", e.getMessage()));
                                                     plugin.getLogger().log(Level.WARNING, "Failed to reload plugin " + targetPlugin.getName(), e);
                                                 }
 

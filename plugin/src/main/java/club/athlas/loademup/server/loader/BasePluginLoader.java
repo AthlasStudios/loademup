@@ -293,8 +293,7 @@ public abstract class BasePluginLoader implements PluginLoader {
                     plugin.getLogger().info("Thread stopped cleanly: " + thread.getName());
                 }
             } catch (Throwable t) {
-                plugin.getLogger().severe("Error while stopping thread: " + thread.getName());
-                t.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Error while stopping thread: " + thread.getName(), t);
             }
         }
     }

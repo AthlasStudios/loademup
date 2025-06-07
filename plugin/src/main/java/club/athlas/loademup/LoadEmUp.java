@@ -119,7 +119,7 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
         if (apiKey.isEmpty()) return clientRef;
 
-        VirusTotalClient virusTotalClient = new VirusTotalClient(apiKey, getLogger());
+        VirusTotalClient virusTotalClient = new VirusTotalClient(apiKey);
 
         virusTotalClient.hasValidApiKey().whenComplete(((result, throwable) -> {
             if (throwable != null) {

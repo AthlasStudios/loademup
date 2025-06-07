@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
 public class VirusTotalClient implements VirusTotal {
 
@@ -25,11 +24,9 @@ public class VirusTotalClient implements VirusTotal {
     private final OkHttpClient client = new OkHttpClient();
 
     private final String apiKey;
-    private final Logger logger;
 
-    public VirusTotalClient(String apiKey, Logger logger) {
+    public VirusTotalClient(String apiKey) {
         this.apiKey = apiKey;
-        this.logger = logger;
     }
 
     @Override
@@ -125,14 +122,30 @@ public class VirusTotalClient implements VirusTotal {
             } catch (IOException e) {
                 throw new RuntimeException("Failed to check API key validity", e);
             }
-        });
+        }, executors);
     }
 
     @Override
     public void shutdown() {
         client.dispatcher().cancelAll();
-        client.dispatcher().executorService().shutdownNow();
         client.connectionPool().evictAll();
+        client.dispatcher().executorService().shutdownNow(); // ensure this is forced
+        try {
+            if (!client.dispatcher().executorService().awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                System.err.println("OkHttp executor did not terminate in time.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        executors.shutdownNow(); // this was shutdown() before — change to shutdownNow()
+        try {
+            if (!executors.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                System.err.println("Custom executor did not terminate in time.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

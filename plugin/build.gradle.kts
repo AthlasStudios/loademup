@@ -17,8 +17,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
     implementation("net.kyori:adventure-text-minimessage:4.21.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-//    implementation("org.mockito:mockito-core:5.12.0")
-//    implementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.0.0")
+    implementation("com.google.code.gson:gson:2.13.1")
 }
 
 tasks {
@@ -33,10 +32,13 @@ tasks {
 
     shadowJar {
         archiveFileName = "${projectName}-${version}.jar"
+        archiveClassifier.set("")
 
         relocate("me.gurwi.commandframework", "club.athlas.loademup.libs.commands")
         relocate("net.kyori", "club.athlas.loademup.libs.kyori")
-        relocate("com.squareup.okhttp3", "club.athlas.loademup.okhttp3")
+        relocate("okhttp3", "club.athlas.loademup.libs.okhttp3")
+        relocate("okio", "club.athlas.loademup.libs.okio")
+        relocate("com.google.gson", "club.athlas.loademup.libs.gson")
     }
 
     runServer {
