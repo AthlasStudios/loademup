@@ -9,7 +9,6 @@ import club.athlas.loademup.api.utils.FileUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
 import club.athlas.loademup.utils.TagResolverUtils;
-import me.gurwi.commandframework.arguments.BooleanArgument;
 import me.gurwi.commandframework.arguments.StringArgument;
 import me.gurwi.commandframework.usable.SubCommand;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -39,17 +38,10 @@ public class LoadCommand extends SubCommand<LoadEmUp> {
                         )
         );
 
-        withOptionalArguments(
-                new BooleanArgument("reload-deps")
-        );
-
         executes((sender, args) -> {
             withPermissions(LEUPermission.LOAD_COMMAND);
 
             String jarFile = (String) args.get("plugin");
-            boolean force = args.getOptional("reload-deps")
-                    .map(o -> (boolean) o)
-                    .orElse(false);
 
             sender.sendMessage("\n");
 

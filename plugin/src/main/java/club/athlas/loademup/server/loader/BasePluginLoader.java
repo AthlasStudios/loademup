@@ -13,7 +13,6 @@ import club.athlas.loademup.server.wrapper.WrappedInstanceManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.PluginClassLoader;
@@ -22,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -265,7 +265,11 @@ public abstract class BasePluginLoader implements PluginLoader {
     }
 
     protected void syncCommands() {
-        ((CraftServer) Bukkit.getServer()).syncCommands();
+        try {
+            ReflectionUtils.callMethod(Bukkit.getServer(), "syncCommands");
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
+
+        }
     }
 
     protected void cleanup(@NotNull WrappedInstanceManager instanceManager, Plugin plugin) {

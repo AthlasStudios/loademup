@@ -1,12 +1,10 @@
 name: '${projectName}'
 version: '${version}'
 main: club.athlas.loademup.LoadEmUp
-api-version: '1.21'
+api-version: '1.13'
 
 description: "Advanced plugin reloader for Spigot — smart, safe, and production-ready."
 website: "https://athlas.club"
-
-depend: [ "InventoryTracker" ]
 
 commands:
   loademup:

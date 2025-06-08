@@ -1,1 +1,96 @@
-prefix: "&8&l(&e&lLoadEmUp&8&l) &r"
+vars:
+  primary: "<#00C8FF>"      # Azzurro brillante
+  secondary: "<#A0A0A0>"    # Grigio tenue
+  error: "<#FF4B4B>"        # Rosso caldo
+  success: "<#4CFF7A>"      # Verde fresco
+
+prefix: ""
+
+pluginNotFound: " <error>⚠ Nessun plugin trovato con il nome <name>."
+jarNotFound: " <error>⚠ Nessun file .jar trovato con il nome <file>."
+invalidPluginJar: " <error>⚠ <file> è un JAR non valido o corrotto."
+unsupportedPluginAction: " <error>⚠ Questo plugin non supporta questa azione. Lo sviluppatore ha disabilitato esplicitamente <action> tramite la configurazione o i metadati."
+
+missingPluginDescription: " <error>⚠ Il file JAR del plugin è privo di una sezione <bold>plugin.yml</bold> descrittiva."
+missingPluginName: " <error>⚠ Nome del plugin mancante o vuoto in plugin.yml."
+missingMainClass: " <error>⚠ Classe principale mancante o vuota in plugin.yml."
+missingPluginVersion: " <error>⚠ Versione del plugin mancante o vuota in plugin.yml."
+missingDependencies: " <error>❌ Dipendenze richieste mancanti: <dependencies>."
+missingNewJarFile: " <error>⚠ Impossibile trovare un nuovo file JAR per <plugin:name>. Assicurati che sia nella cartella plugins."
+
+# SCAN STUFF
+
+noMainClass: " <error>⚠ Il JAR del plugin non specifica una <bold>Main-Class</bold> nel manifesto."
+invalidMainClass: " <error>⚠ La classe principale del plugin è invalida o non può essere caricata."
+unexpectedError: " <error>❌ Si è verificato un errore imprevisto. Controlla la console per i dettagli."
+
+lookingForNewJar: " <primary>🔍 Ricerca di un nuovo file JAR per <plugin:name>..."
+lookingForPluginYML: " <primary>🔍 Ricerca di un plugin.yml valido in <file>..."
+startingIntegrityCheck: " <primary>🧪 Avvio del controllo d’integrità su <file>..."
+checkingDependencies: " <primary>🛠 Verifica delle dipendenze del plugin..."
+checkingDependants: " <primary>🛠 Verifica dei plugin dipendenti da <plugin:name>..."
+
+# LOAD
+
+tryingToLoad: " <primary>⏳ Caricamento di <plugin:name> <secondary>v<plugin:version>..."
+pluginLoaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>caricato in <time:millis>ms."
+pluginLoadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Caricamento di <plugin:name> fallito. Passa il mouse per i dettagli o controlla la console."
+pluginLoadedButDisabled: " <error>⚠ <plugin:name> <secondary>v<plugin:version> <error>caricato ma si è disattivato automaticamente in <time:millis>ms. Forse questo plugin non supporta il ricaricamento."
+pluginAlreadyLoaded: " <secondary>ℹ <plugin:name> è già caricato."
+
+# UNLOAD
+
+tryingToUnload: " <primary>⏳ Scaricamento di <plugin:name> <secondary>v<plugin:version>..."
+pluginUnloadBlocked: " <error>⚠ Impossibile scaricare <plugin:name>. Sono stati trovati i seguenti dipendenti e sub-dipendenti: <secondary><dependants>."
+pluginUnloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>scaricato in <time:millis>ms."
+pluginUnloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Scaricamento di <plugin:name> fallito. Passa il mouse per i dettagli o controlla la console."
+
+# RELOAD
+
+tryingToReload: " <primary>🔄 Ricaricamento di <plugin:name> <secondary>v<plugin:version>..."
+pluginReloadBlocked: " <error>⚠ Impossibile ricaricare <plugin:name>. Sono stati trovati i seguenti dipendenti e sub-dipendenti: <secondary><dependants>."
+pluginReloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>ricaricato in <time:millis>ms."
+reloadingDependants: " <primary>🔁 Ricaricamento di <count> plugin dipendenti da <plugin:name>..."
+pluginReloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Ricaricamento di <plugin:name> fallito. Passa il mouse per i dettagli o controlla la console."
+pluginDependantReloaded: " <success>✔ <dependant:name> <secondary>v<dependant:version> <success>ricaricato in <time:millis>ms (dipendente)."
+pluginDependantReloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Ricaricamento del plugin dipendente <dependant:name> fallito. Passa il mouse per i dettagli o controlla la console."
+pluginDependantsReloaded: " <success>✔ <count> plugin dipendenti ricaricati con successo in <time:millis>ms."
+dependantReloadUnsupported: " <error>⚠ Impossibile ricaricare il plugin dipendente <dependant:name>: ricaricamento non supportato. <secondary><italic>Ignorato..."
+dependantCurrentJarNotFound: " <error>⚠ Impossibile trovare il file JAR corrente per il plugin dipendente <dependant:name>. <secondary><italic>Ignorato..."
+
+# ENABLE
+
+tryingToEnable: " <primary>⏳ Abilitazione di <plugin:name> <secondary>v<plugin:version>..."
+pluginEnabled: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>abilitato in <time:millis>ms."
+pluginEnableFail: " <hover:show_text:'<error><error_msg>'><error>❌ Abilitazione di <plugin:name> fallita. Passa il mouse per i dettagli o controlla la console."
+pluginAlreadyEnabled: " <secondary>ℹ <plugin:name> è già abilitato."
+
+# DISABLE
+
+tryingToDisable: "<primary>⏳ Disabilitazione di <plugin:name> <secondary>v<plugin:version>..."
+pluginDisabled: "<success>✔ <plugin:name> <secondary>v<plugin:version> <success>disabilitato in <time:millis>ms."
+pluginDisableFail: "<hover:show_text:'<error><error_msg>'><error>❌ Disabilitazione di <plugin:name> fallita. Passa il mouse per i dettagli o controlla la console."
+pluginAlreadyDisabled: "<secondary>ℹ <plugin:name> è già disabilitato."
+
+# VT SCAN
+
+virusScanStart: " <primary>⚡ Avvio scansione VirusTotal per contenuti sospetti..."
+virusScanClear: " <success>✔ Scansione VirusTotal completata. Nessuna minaccia rilevata."
+
+virusScanThreatsFound: |-
+  
+  <error> ❗ Scansione VirusTotal completata. Rilevate <detections:count> minacce:
+  <list>
+
+virusScanResultFormat: " • <yellow><detection:engine> <gold><detection:type></gold> (<#FF4B4B><detection:severity></#FF4B4B>)"
+
+virusScanUnableToScan: " <error>❌ Impossibile eseguire la scansione VirusTotal in questo momento."
+virusScanNoResult: " <error>⚠ La scansione VirusTotal non ha restituito alcun risultato."
+virusScanServiceDisabled: " <error>⚠ Il servizio di scansione VirusTotal è disabilitato o ancora in caricamento."
+
+# OTHER
+
+help:
+  header: "\n <gradient:#00C8FF:#0088FF><bold>LoadEmUp</bold></gradient> <dark_gray><bold>›</bold></dark_gray> <#A0A0A0><italic>In esecuzione su</italic></#A0A0A0> <build>\n\n"
+  commandFormat: " <#4FB2FF>»</#4FB2FF> <hover:show_text:'<#A0A0A0>Fai clic per completare automaticamente questo comando'><click:suggest_command:'/<helpvalue:command>'><#00C8FF>/<helpvalue:command></#00C8FF></click></hover> <#A0A0A0>–</#A0A0A0> <white><helpvalue:description></white>"
+  footer: "\n\n <#A0A0A0>Domande?</#A0A0A0> <hover:show_text:'<#A0A0A0>Fai clic per entrare nel nostro server Discord'><click:open_url:'https://dev.athlas.club'><#00C8FF><underlined>Unisciti a noi su Discord</underlined></#00C8FF></click></hover><#A0A0A0></#A0A0A0>\n"

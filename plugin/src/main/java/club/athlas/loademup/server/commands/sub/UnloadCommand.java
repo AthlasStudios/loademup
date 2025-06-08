@@ -68,6 +68,8 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
 
                         unloadPlugin(targetPlugin, sender);
 
+                        if (!CommandCommons.hasArgFlags(args, "--unload-deps")) return;
+
                         dependants.stream()
                                 .map(loader::getPlugin)
                                 .filter(Optional::isPresent)
@@ -99,7 +101,7 @@ public class UnloadCommand extends SubCommand<LoadEmUp> {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String @NotNull [] args) {
         if (args.length <= 1) return super.onTabComplete(sender, command, alias, args);
-        return List.of("--force");
+        return List.of("--force", "--unload-deps");
     }
 
     private @NotNull List<String> getAllDependentNames(PluginLoader loader, Plugin rootPlugin) {

@@ -5,8 +5,8 @@ import org.jetbrains.annotations.Nullable;
 public enum DefPlatform implements Platform {
 
     SPIGOT("spigot", null),
-    PAPER("paper", "com.destroystokyo.paper.PaperConfig"),
-    PURPUR("purpur", "org.purpurmc.purpur.PurpurConfig");
+    PAPER("paper", "io.papermc.paper.plugin.manager.PaperPluginManagerImpl"),
+    PURPUR("purpur", "io.papermc.paper.plugin.manager.PaperPluginManagerImpl");
 
     private final String identifier;
     private final String classPath;

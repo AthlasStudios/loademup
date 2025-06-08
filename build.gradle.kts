@@ -29,11 +29,11 @@ subprojects {
 
     dependencies {
         implementation("org.jetbrains:annotations:24.0.0")
-        compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+        compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
         //compileOnly("org.spigotmc:spigot-api:1.21.5-R0.1-SNAPSHOT")
     }
 
-    val targetJavaVersion = 21
+    val targetJavaVersion = 17
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
 

@@ -41,7 +41,7 @@ pluginAlreadyLoaded: " <secondary>ℹ <plugin:name> is already loaded."
 # UNLOAD
 
 tryingToUnload: " <primary>⏳ Unloading <plugin:name> <secondary>v<plugin:version>..."
-pluginUnloadBlocked: " <error>⚠ Unable to unload <plugin:name>. Found the following dependants: <secondary><dependants>."
+pluginUnloadBlocked: " <error>⚠ Unable to unload <plugin:name>. Found the following dependants and sub-dependants: <secondary><dependants>."
 pluginUnloaded: " <success>✔ <plugin:name> <secondary>v<plugin:version> <success>unloaded in <time:millis>ms."
 pluginUnloadFail: " <hover:show_text:'<error><error_msg>'><error>❌ Failed to unload <plugin:name>. Hover for details or check console."
 
