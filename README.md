@@ -3,6 +3,8 @@
 
 **LoadEmUp** is a powerful plugin manager designed to safely load, unload, enable, disable, and reload individual plugins on Spigot servers, even in production environments. With built-in security scans, dependency checks, and integrity validation, you can trust LoadEmUp to keep your server stable while making changes on the fly.
 
+[![Download on Modrinth](https://img.shields.io/badge/Download%20on-Modrinth-blue?logo=modrinth)](https://modrinth.com/plugin/loademup)
+
 ---
 
 ## 🚀 Features
@@ -78,7 +80,7 @@ LoadEmUp is designed to work alongside most modern plugins. However, plugins wit
 
 ## 📚 Documentation
 
-For detailed guides, configuration help, and FAQs, visit the [LoadEmUp Wiki](https://github.com/AthlasStudios/LoadEmUp/wiki).
+For detailed guides, configuration help, and FAQs, visit the [LoadEmUp Wiki](https://gurwiworks.gitbook.io/loademup-wiki).
 
 ---
 
