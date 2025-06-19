@@ -1,5 +1,6 @@
 package club.athlas.loademup.integration;
 
+import club.athlas.loademup.LoadEmUp;
 import club.athlas.loademup.api.virustotal.VirusTotal;
 import club.athlas.loademup.api.virustotal.model.AVVerdict;
 import club.athlas.loademup.api.virustotal.model.VTAnalysisResult;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VirusTotalClient implements VirusTotal {
 
@@ -23,9 +26,11 @@ public class VirusTotalClient implements VirusTotal {
 
     private final OkHttpClient client = new OkHttpClient();
 
+    private final LoadEmUp plugin;
     private final String apiKey;
 
-    public VirusTotalClient(String apiKey) {
+    public VirusTotalClient(LoadEmUp plugin, String apiKey) {
+        this.plugin = plugin;
         this.apiKey = apiKey;
     }
 
@@ -127,24 +132,27 @@ public class VirusTotalClient implements VirusTotal {
 
     @Override
     public void shutdown() {
+        Logger logger = plugin.getLogger();
+
         client.dispatcher().cancelAll();
         client.connectionPool().evictAll();
-        client.dispatcher().executorService().shutdownNow(); // ensure this is forced
+        client.dispatcher().executorService().shutdownNow();
+
         try {
             if (!client.dispatcher().executorService().awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
-                System.err.println("OkHttp executor did not terminate in time.");
+                logger.severe("OkHttp executor did not terminate in time.");
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "OkHttp executor did not terminate in time.", e);
         }
 
-        executors.shutdownNow(); // this was shutdown() before — change to shutdownNow()
+        executors.shutdownNow();
         try {
             if (!executors.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
-                System.err.println("Custom executor did not terminate in time.");
+                logger.severe("Custom executor did not terminate in time.");
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Custom executor did not terminate in time.", e);
         }
     }
 
