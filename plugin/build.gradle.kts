@@ -5,7 +5,7 @@ plugins {
     id("com.modrinth.minotaur")
 
     id("xyz.jpenilla.resource-factory-bukkit-convention")
-    id("xyz.jpenilla.resource-factory-paper-convention")
+    //id("xyz.jpenilla.resource-factory-paper-convention") TODO -> MIGRATE
 }
 
 data class PluginData(
@@ -82,21 +82,27 @@ bukkitPluginYaml {
     website.set("https://dev.athlas.club")
     foliaSupported.set(pluginData.foliaSupported)
 
-    commands.add(commands.create("loademup"))
+    commands.add(
+        commands.create("loademup",
+            {
+                aliases.add("leu")
+            }
+        )
+    )
 }
 
-paperPluginYaml {
-    main.set(pluginData.mainClass)
-    bootstrapper.set("club.athlas.loademup.LoadEmUpBootstrap")
-    apiVersion.set(pluginData.apiVersion)
-
-    name.set(rootProject.name)
-    version.set(rootProject.version.toString())
-    description.set(pluginData.description)
-    authors.set(pluginData.authors)
-    website.set("https://dev.athlas.club")
-    foliaSupported.set(pluginData.foliaSupported)
-}
+//paperPluginYaml {
+//    main.set(pluginData.mainClass)
+//    bootstrapper.set("club.athlas.loademup.LoadEmUpBootstrap")
+//    apiVersion.set(pluginData.apiVersion)
+//
+//    name.set(rootProject.name)
+//    version.set(rootProject.version.toString())
+//    description.set(pluginData.description)
+//    authors.set(pluginData.authors)
+//    website.set("https://dev.athlas.club")
+//    foliaSupported.set(pluginData.foliaSupported)
+//}
 
 modrinth {
     token.set(System.getenv("MODRINTH_TOKEN"))
