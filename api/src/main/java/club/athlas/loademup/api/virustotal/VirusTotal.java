@@ -15,4 +15,5 @@ public interface VirusTotal {
     CompletableFuture<Boolean> hasValidApiKey();
 
     void shutdown();
+
 }

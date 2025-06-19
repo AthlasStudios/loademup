@@ -1,12 +1,7 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     id("maven-publish")
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow")
 }
-
-val projectName = rootProject.name
-val projectVersion = project.properties["projectVersion"].toString()
 
 repositories {
     mavenCentral()
@@ -16,17 +11,17 @@ dependencies {
 
 }
 
-tasks.register<Jar>("sourceJar") {
-    from(sourceSets.main.get().allJava)
-}
-
 tasks {
     assemble {
         dependsOn("shadowJar")
     }
 
-    withType<ShadowJar> {
-        archiveFileName.set("$projectName-$version-API.jar")
+    shadowJar {
+        archiveFileName.set("${rootProject.name}-${rootProject.version}-API.jar")
+    }
+
+    register<Jar>("sourcesJar") {
+        from(sourceSets.main.get().allJava)
     }
 }
 
@@ -35,9 +30,9 @@ publishing {
         create<MavenPublication>("shadedJar") {
             artifact(tasks.named("shadowJar").get())
 
-            groupId = "club.athlas"
-            artifactId = projectName
-            version = projectVersion
+            groupId = rootProject.group.toString()
+            artifactId = rootProject.name
+            version = rootProject.version.toString()
         }
     }
 

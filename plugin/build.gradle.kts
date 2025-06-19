@@ -1,12 +1,28 @@
 plugins {
-    id("com.gradleup.shadow") version "8.3.5"
-    id("xyz.jpenilla.run-paper") version "2.3.1"
-    id("io.papermc.paperweight.userdev") version "1.7.7"
-    id("com.modrinth.minotaur") version "2.+"
+    id("com.gradleup.shadow")
+    id("io.papermc.paperweight.userdev")
+    id("xyz.jpenilla.run-paper")
+    id("com.modrinth.minotaur")
+
+    id("xyz.jpenilla.resource-factory-bukkit-convention")
+    id("xyz.jpenilla.resource-factory-paper-convention")
 }
 
-val projectName = rootProject.name
-version = project.properties["projectVersion"].toString()
+data class PluginData(
+    val mainClass: String,
+    val apiVersion: String,
+    val description: String,
+    val authors: List<String>,
+    val foliaSupported: Boolean
+)
+
+val pluginData = PluginData(
+    mainClass = "club.athlas.loademup.LoadEmUp",
+    apiVersion = "1.21",
+    description = "Advanced plugin reloader for Spigot — smart, safe, and production-ready.",
+    authors = listOf("Gurwi"),
+    foliaSupported = false
+)
 
 dependencies {
     implementation(project(":api"))
@@ -22,38 +38,64 @@ dependencies {
 }
 
 tasks {
-    compileJava {
-        options.encoding = "UTF-8"
-        options.release = 17
-    }
-
     assemble {
         dependsOn(shadowJar)
     }
 
     shadowJar {
-        archiveFileName = "${projectName}-${version}.jar"
-        archiveClassifier.set("")
+        archiveFileName = "${rootProject.name}-${rootProject.version}.jar"
+
+        from("build/generated/resourceFactory/main") {
+            include("plugin.yml", "paper-plugin.yml")
+        }
 
         relocate("me.gurwi.commandframework", "club.athlas.loademup.libs.commands")
         relocate("net.kyori", "club.athlas.loademup.libs.kyori")
         relocate("okhttp3", "club.athlas.loademup.libs.okhttp3")
         relocate("okio", "club.athlas.loademup.libs.okio")
-        relocate("com.google.gson", "club.athlas.loademup.libs.gson")
+        relocate("com.google", "club.athlas.loademup.libs.gson")
     }
 
     runServer {
-        minecraftVersion("1.21.3")
+        minecraftVersion("1.21.5")
+    }
+
+    @Suppress("UnstableApiUsage")
+    withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
+        javaLauncher = rootProject.javaToolchains.launcherFor {
+            vendor = JvmVendorSpec.JETBRAINS
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+
+        jvmArgs("-XX:+AllowEnhancedClassRedefinition")
     }
 }
 
-tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
-    javaLauncher = javaToolchains.launcherFor {
-        vendor = JvmVendorSpec.JETBRAINS
-        languageVersion = JavaLanguageVersion.of(21)
-    }
+bukkitPluginYaml {
+    main.set(pluginData.mainClass)
+    apiVersion.set(pluginData.apiVersion)
 
-    jvmArgs("-XX:+AllowEnhancedClassRedefinition")
+    name.set(rootProject.name)
+    version.set(rootProject.version.toString())
+    description.set(pluginData.description)
+    authors.set(pluginData.authors)
+    website.set("https://dev.athlas.club")
+    foliaSupported.set(pluginData.foliaSupported)
+
+    commands.add(commands.create("loademup"))
+}
+
+paperPluginYaml {
+    main.set(pluginData.mainClass)
+    bootstrapper.set("club.athlas.loademup.LoadEmUpBootstrap")
+    apiVersion.set(pluginData.apiVersion)
+
+    name.set(rootProject.name)
+    version.set(rootProject.version.toString())
+    description.set(pluginData.description)
+    authors.set(pluginData.authors)
+    website.set("https://dev.athlas.club")
+    foliaSupported.set(pluginData.foliaSupported)
 }
 
 modrinth {
@@ -69,5 +111,6 @@ modrinth {
         "1.18.2", "1.18.1", "1.18",
         "1.17.1", "1.17"
     )
+
     loaders.addAll("bukkit", "spigot", "paper", "purpur")
 }
