@@ -6,6 +6,7 @@ import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.virustotal.model.VTAnalysisResult;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.utils.TagResolverUtils;
+import me.gurwi.commandframework.arguments.LongStringArgument;
 import me.gurwi.commandframework.arguments.StringArgument;
 import me.gurwi.commandframework.usable.SubCommand;
 import net.kyori.adventure.text.Component;
@@ -34,7 +35,7 @@ public class ScanCommand extends SubCommand<LoadEmUp> {
         withPermissions(LEUPermission.SCAN_COMMAND);
 
         withArguments(
-                new StringArgument("plugin")
+                new LongStringArgument("plugin")
                         .replaceSuggestions(commandSender -> loader.getPluginJarFiles().stream()
                                 .map(File::getName)
                                 .collect(Collectors.toList())

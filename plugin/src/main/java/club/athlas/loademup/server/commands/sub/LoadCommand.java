@@ -9,6 +9,7 @@ import club.athlas.loademup.api.utils.FileUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
 import club.athlas.loademup.utils.TagResolverUtils;
+import me.gurwi.commandframework.arguments.LongStringArgument;
 import me.gurwi.commandframework.arguments.StringArgument;
 import me.gurwi.commandframework.usable.SubCommand;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -31,7 +32,7 @@ public class LoadCommand extends SubCommand<LoadEmUp> {
     @Override
     public void setup() {
         withArguments(
-                new StringArgument("plugin")
+                new LongStringArgument("plugin")
                         .replaceSuggestions(commandSender -> loader.getPluginJarFiles().stream()
                                 .map(File::getName)
                                 .collect(Collectors.toList())
