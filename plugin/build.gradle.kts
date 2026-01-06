@@ -18,7 +18,7 @@ data class PluginData(
 
 val pluginData = PluginData(
     mainClass = "club.athlas.loademup.LoadEmUp",
-    apiVersion = "1.21",
+    apiVersion = "1.13",
     description = "Advanced plugin reloader for Spigot — smart, safe, and production-ready.",
     authors = listOf("Gurwi"),
     foliaSupported = false
