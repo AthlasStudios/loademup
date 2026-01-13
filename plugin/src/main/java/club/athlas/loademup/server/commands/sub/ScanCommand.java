@@ -5,10 +5,10 @@ import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.virustotal.model.VTAnalysisResult;
 import club.athlas.loademup.config.constant.LangKey;
+import club.athlas.loademup.server.commands.base.PluginCommand;
 import club.athlas.loademup.utils.TagResolverUtils;
-import me.gurwi.commandframework.arguments.LongStringArgument;
-import me.gurwi.commandframework.arguments.StringArgument;
-import me.gurwi.commandframework.usable.SubCommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class ScanCommand extends SubCommand<LoadEmUp> {
+public class ScanCommand extends PluginCommand<LoadEmUp> {
 
     private final PluginLoader loader;
 
@@ -32,38 +32,39 @@ public class ScanCommand extends SubCommand<LoadEmUp> {
 
     @Override
     public void setup() {
-        withPermissions(LEUPermission.SCAN_COMMAND);
+        withPermission(LEUPermission.SCAN_COMMAND);
 
         withArguments(
-                new LongStringArgument("plugin")
-                        .replaceSuggestions(commandSender -> loader.getPluginJarFiles().stream()
-                                .map(File::getName)
-                                .collect(Collectors.toList())
-                        )
+                new GreedyStringArgument("plugin")
+                        .replaceSuggestions(ArgumentSuggestions.stringCollection(sender ->
+                                loader.getPluginJarFiles().stream()
+                                        .map(File::getName)
+                                        .collect(Collectors.toList())
+                        ))
         );
 
         executes((sender, args) -> {
-            String jarFile = (String) args.get("plugin");
+            String jarFileName = (String) args.get("plugin");
 
             sender.sendMessage("\n");
 
             plugin.getVirusTotalIntegration().ifPresentOrElse(
                     virusTotal -> {
-                        loader.getPluginFile(jarFile).ifPresentOrElse(
+                        loader.getPluginFile(jarFileName).ifPresentOrElse(
                                 file -> {
 
                                     plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_START);
                                     virusTotal.runScan(file).whenComplete((uploadResponse, uploadErr) -> {
                                         if (uploadErr != null) {
                                             plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_UNABLE_TO_SCAN);
-                                            plugin.getLogger().log(Level.WARNING, "[VirusTotal] Unable to scan " + jarFile, uploadErr);
+                                            plugin.getLogger().log(Level.WARNING, "[VirusTotal] Unable to scan " + jarFileName, uploadErr);
                                             return;
                                         }
 
                                         virusTotal.getAnalysisResult(uploadResponse.id()).whenComplete(((vtAnalysisResult, getErr) -> {
                                             if (getErr != null) {
                                                 plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_NO_RESULT);
-                                                plugin.getLogger().log(Level.WARNING, "[VirusTotal] Unable get result " + jarFile, getErr);
+                                                plugin.getLogger().log(Level.WARNING, "[VirusTotal] Unable get result " + jarFileName, getErr);
                                                 return;
                                             }
 
@@ -83,7 +84,7 @@ public class ScanCommand extends SubCommand<LoadEmUp> {
                                     });
                                 },
 
-                                () -> plugin.getMessages().send(sender, LangKey.JAR_NOT_FOUND, Placeholder.parsed("file", jarFile))
+                                () -> plugin.getMessages().send(sender, LangKey.JAR_NOT_FOUND, Placeholder.parsed("file", jarFileName))
                         );
                     },
 

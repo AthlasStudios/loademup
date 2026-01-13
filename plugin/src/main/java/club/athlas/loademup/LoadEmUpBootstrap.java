@@ -11,7 +11,6 @@ public final class LoadEmUpBootstrap implements PluginBootstrap {
 
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
-        // TODO -> REGISTER COMMAND API COMMANDS
     }
 
     @Override

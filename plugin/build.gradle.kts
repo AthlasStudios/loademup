@@ -5,7 +5,7 @@ plugins {
     id("com.modrinth.minotaur")
 
     id("xyz.jpenilla.resource-factory-bukkit-convention")
-    //id("xyz.jpenilla.resource-factory-paper-convention") TODO -> MIGRATE
+    //id("xyz.jpenilla.resource-factory-paper-convention")
 }
 
 data class PluginData(
@@ -18,7 +18,7 @@ data class PluginData(
 
 val pluginData = PluginData(
     mainClass = "club.athlas.loademup.LoadEmUp",
-    apiVersion = "1.21",
+    apiVersion = "1.13",
     description = "Advanced plugin reloader for Spigot — smart, safe, and production-ready.",
     authors = listOf("Gurwi"),
     foliaSupported = false
@@ -30,9 +30,11 @@ dependencies {
     // DEPENDENCIES
     paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
 
-    implementation("me.gurwi:CommandFramework:1.0.4")
+    implementation("dev.jorel:commandapi-spigot-shade:11.1.0")
+    implementation("dev.jorel:commandapi-paper-shade:11.1.0")
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
     implementation("net.kyori:adventure-text-minimessage:4.21.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.code.gson:gson:2.13.1")
 }
@@ -49,15 +51,15 @@ tasks {
             include("plugin.yml", "paper-plugin.yml")
         }
 
-        relocate("me.gurwi.commandframework", "club.athlas.loademup.libs.commands")
+        relocate("dev.jorel.commandapi", "club.athlas.loademup.libs.commands")
         relocate("net.kyori", "club.athlas.loademup.libs.kyori")
         relocate("okhttp3", "club.athlas.loademup.libs.okhttp3")
         relocate("okio", "club.athlas.loademup.libs.okio")
-        relocate("com.google", "club.athlas.loademup.libs.gson")
+        //relocate("com.google", "club.athlas.loademup.libs")
     }
 
     runServer {
-        minecraftVersion("1.21.5")
+        minecraftVersion("1.21.10")
     }
 
     @Suppress("UnstableApiUsage")
@@ -82,19 +84,19 @@ bukkitPluginYaml {
     website.set("https://dev.athlas.club")
     foliaSupported.set(pluginData.foliaSupported)
 
-    commands.add(
-        commands.create("loademup",
-            {
-                aliases.add("leu")
-            }
-        )
-    )
+//    commands.add(
+//        commands.create("loademup",
+//            {
+//                aliases.add("leu")
+//            }
+//        )
+//    )
 }
 
 //paperPluginYaml {
 //    main.set(pluginData.mainClass)
 //    bootstrapper.set("club.athlas.loademup.LoadEmUpBootstrap")
-//    apiVersion.set(pluginData.apiVersion)
+//    apiVersion.set("1.20")
 //
 //    name.set(rootProject.name)
 //    version.set(rootProject.version.toString())
@@ -111,7 +113,7 @@ modrinth {
     versionType.set("beta")
     uploadFile.set(file("build/libs/${rootProject.name}-$version.jar"))
     gameVersions.addAll(
-        "1.21.5", "1.21.4", "1.21.3", "1.21.2", "1.21.1", "1.21",
+        "1.21.10", "1.21.9", "1.21.8", "1.21.7", "1.21.6", "1.21.5", "1.21.4", "1.21.3", "1.21.2", "1.21.1", "1.21",
         "1.20.6", "1.20.5", "1.20.4", "1.20.3", "1.20.2", "1.20.1", "1.20",
         "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19",
         "1.18.2", "1.18.1", "1.18",

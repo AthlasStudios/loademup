@@ -8,10 +8,10 @@ import club.athlas.loademup.api.object.PluginData;
 import club.athlas.loademup.api.utils.FileUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
+import club.athlas.loademup.server.commands.base.PluginCommand;
 import club.athlas.loademup.utils.TagResolverUtils;
-import me.gurwi.commandframework.arguments.LongStringArgument;
-import me.gurwi.commandframework.arguments.StringArgument;
-import me.gurwi.commandframework.usable.SubCommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class LoadCommand extends SubCommand<LoadEmUp> {
+public class LoadCommand extends PluginCommand<LoadEmUp> {
 
     private final PluginLoader loader;
 
@@ -32,21 +32,22 @@ public class LoadCommand extends SubCommand<LoadEmUp> {
     @Override
     public void setup() {
         withArguments(
-                new LongStringArgument("plugin")
-                        .replaceSuggestions(commandSender -> loader.getPluginJarFiles().stream()
-                                .map(File::getName)
-                                .collect(Collectors.toList())
-                        )
+                new GreedyStringArgument("plugin")
+                        .replaceSuggestions(ArgumentSuggestions.stringCollection(sender ->
+                                loader.getPluginJarFiles().stream()
+                                        .map(File::getName)
+                                        .collect(Collectors.toList())
+                        ))
         );
 
         executes((sender, args) -> {
-            withPermissions(LEUPermission.LOAD_COMMAND);
+            withPermission(LEUPermission.LOAD_COMMAND);
 
-            String jarFile = (String) args.get("plugin");
+            String jarFileName = (String) args.get("plugin");
 
             sender.sendMessage("\n");
 
-            loader.getPluginFile(jarFile).ifPresentOrElse(
+            loader.getPluginFile(jarFileName).ifPresentOrElse(
                     targetFile -> {
                         if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.LOAD, targetFile, sender)) return;
 
@@ -101,7 +102,7 @@ public class LoadCommand extends SubCommand<LoadEmUp> {
                         );
                     },
 
-                    () -> plugin.getMessages().send(sender, LangKey.JAR_NOT_FOUND, Placeholder.parsed("file", jarFile))
+                    () -> plugin.getMessages().send(sender, LangKey.JAR_NOT_FOUND, Placeholder.parsed("file", jarFileName))
             );
 
             sender.sendMessage("\n");

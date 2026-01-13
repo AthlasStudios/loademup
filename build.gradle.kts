@@ -12,7 +12,7 @@ plugins {
 
 allprojects {
     group = "club.athlas"
-    version = "0.1.2"
+    version = "0.1.3"
 
     apply(plugin = "java-library")
 
@@ -28,6 +28,7 @@ subprojects {
 
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://repo.codemc.org/repository/maven-public/")
     }
 
     dependencies {

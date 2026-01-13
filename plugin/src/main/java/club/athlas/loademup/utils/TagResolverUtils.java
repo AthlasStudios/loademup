@@ -2,7 +2,7 @@ package club.athlas.loademup.utils;
 
 import club.athlas.loademup.api.object.PluginData;
 import club.athlas.loademup.api.virustotal.model.VTAnalysisResult;
-import me.gurwi.commandframework.utility.helpers.HelpValue;
+import club.athlas.loademup.server.commands.sub.HelpCommand;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -38,13 +38,12 @@ public class TagResolverUtils {
     }
 
     @Contract("_ -> new")
-    public static @NotNull TagResolver resolverFrom(HelpValue helpValue) {
+    public static @NotNull TagResolver resolverFrom(HelpCommand.HelpValue helpValue) {
         return TagResolver.resolver("helpvalue", (args, ctx) -> {
             final String param = args.popOr("param expected").value();
             String value = switch (param) {
-                case "command" -> helpValue.getCommand();
+                case "command" -> helpValue.getUsage();
                 case "description" -> helpValue.getDescription();
-                case "permission" -> helpValue.getPermission().getPermission();
                 default -> "<red>invalid param";
             };
 
