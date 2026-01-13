@@ -41,13 +41,13 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
     @Override
     public void onLoad() {
+        getLogger().info("Loading LoadEmUp...");
+
         loadersManager.registerPluginLoader(DefPlatform.SPIGOT, new SpigotPluginLoader(this));
         loadersManager.registerPluginLoader(DefPlatform.PAPER, new PaperPluginLoader(this));
 
         CommandAPIConfig<?> commandAPIConfig = DefPlatform.getCurrentPlatform() == DefPlatform.SPIGOT ? new CommandAPISpigotConfig(this) : new CommandAPIPaperConfig(this);
         CommandAPI.onLoad(commandAPIConfig.verboseOutput(environment == Environment.DEVELOPMENT));
-
-        System.out.println("On Load Executed!");
     }
 
     @Override
@@ -77,7 +77,6 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
     @Override
     public void onDisable() {
-        CommandAPI.unregister("loademup", true);
         CommandAPI.onDisable();
 
         getVirusTotalIntegration().ifPresent(VirusTotal::shutdown);

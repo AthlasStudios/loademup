@@ -39,7 +39,7 @@ public class DisableCommand extends PluginCommand<LoadEmUp> {
 
             sender.sendMessage("\n");
 
-            if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.LOAD, target, sender)) return;
+            if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.DISABLE, target, sender)) return;
 
             TagResolver placeholder = TagResolverUtils.resolverFrom(PluginData.from(target));
 
