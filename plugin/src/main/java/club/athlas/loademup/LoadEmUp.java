@@ -15,6 +15,10 @@ import club.athlas.loademup.server.commands.LEUMainCommand;
 import club.athlas.loademup.server.loader.LoadersManager;
 import club.athlas.loademup.server.loader.PaperPluginLoader;
 import club.athlas.loademup.server.loader.SpigotPluginLoader;
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIConfig;
+import dev.jorel.commandapi.CommandAPIPaperConfig;
+import dev.jorel.commandapi.CommandAPISpigotConfig;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,9 +41,13 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
     @Override
     public void onLoad() {
+        getLogger().info("Loading LoadEmUp...");
+
         loadersManager.registerPluginLoader(DefPlatform.SPIGOT, new SpigotPluginLoader(this));
         loadersManager.registerPluginLoader(DefPlatform.PAPER, new PaperPluginLoader(this));
-        loadersManager.registerPluginLoader(DefPlatform.PURPUR, new PaperPluginLoader(this));
+
+        CommandAPIConfig<?> commandAPIConfig = DefPlatform.getCurrentPlatform() == DefPlatform.SPIGOT ? new CommandAPISpigotConfig(this) : new CommandAPIPaperConfig(this);
+        CommandAPI.onLoad(commandAPIConfig.verboseOutput(environment == Environment.DEVELOPMENT));
     }
 
     @Override
@@ -59,13 +67,18 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
         getLogger().info("Initialized Plugin Loader for the " + DefPlatform.getCurrentPlatform().getIdentifier() + " platform.");
 
-        new LEUMainCommand(this).get().register(this);
+        CommandAPI.onEnable();
+
+        new LEUMainCommand(this)
+                .register();
 
         updateChecker.cacheLatestVersion();
     }
 
     @Override
     public void onDisable() {
+        CommandAPI.onDisable();
+
         getVirusTotalIntegration().ifPresent(VirusTotal::shutdown);
     }
 

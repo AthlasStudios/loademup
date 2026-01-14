@@ -5,8 +5,8 @@ import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.object.PluginData;
-import me.gurwi.commandframework.arguments.StringArgument;
-import me.gurwi.commandframework.usable.SubCommand;
+import club.athlas.loademup.server.commands.base.PluginCommand;
+import club.athlas.loademup.server.commands.base.argument.PluginArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class InfoCommand extends SubCommand<LoadEmUp> {
+public class InfoCommand extends PluginCommand<LoadEmUp> {
 
     private final PluginLoader loader;
 
@@ -31,76 +31,68 @@ public class InfoCommand extends SubCommand<LoadEmUp> {
 
     @Override
     public void setup() {
+        withPermission(LEUPermission.INFO_COMMAND);
+
         withArguments(
-                new StringArgument("plugin")
-                        .replaceSuggestions(commandSender -> loader.getPlugins().stream()
-                                .map(Plugin::getName)
-                                .collect(Collectors.toList())
-                        )
+                new PluginArgument("plugin", plugin)
         );
 
         executes((sender, args) -> {
-            withPermissions(LEUPermission.INFO_COMMAND);
+            Plugin target = (Plugin) args.get("plugin");
 
-            String pluginName = (String) args.get("plugin");
+            PluginData data = PluginData.from(target);
+            TextComponent.@NotNull Builder component = Component.text();
 
-            loader.getPlugin(pluginName).ifPresentOrElse(
-                    pl -> {
-                        PluginData data = PluginData.from(pl);
-                        TextComponent.@NotNull Builder component = Component.text();
-
-                        component.appendNewline();
-                        component.append(
-                                Component.text(" " + data.name(), NamedTextColor.YELLOW, TextDecoration.BOLD),
-                                Component.text(" v" + data.version().replace("v", ""), NamedTextColor.GRAY),
-                                Component.text(" - ", NamedTextColor.DARK_GRAY),
-                                Component.text(pl.isEnabled() ? "Enabled" : "Disabled", pl.isEnabled() ? NamedTextColor.GREEN : NamedTextColor.RED, TextDecoration.BOLD)
-                        );
-
-                        component.appendNewline().appendNewline();
-
-                        if (!data.authors().isEmpty()) component.append(
-                                Component.text("    Author(s) ", NamedTextColor.YELLOW), Component.text(data.authors().toString().replace("[", "").replace("]", "")),
-                                Component.newline()
-                        );
-
-                        if (!data.contributors().isEmpty()) component.append(
-                                Component.text("    Contributors ", NamedTextColor.YELLOW), Component.text(data.contributors().toString().replace("[", "").replace("]", "")),
-                                Component.newline()
-                        );
-
-                        if (data.description() != null && !data.description().isEmpty()) component.append(
-                                Component.text("    Description ", NamedTextColor.YELLOW), Component.text(data.description()),
-                                Component.newline()
-                        );
-
-                        if (data.website() != null && !data.website().isEmpty()) component.append(
-                                Component.text("    Description ", NamedTextColor.YELLOW), Component.text(data.website()),
-                                Component.newline()
-                        );
-
-                        component.append(Component.text("    API-Ver ", NamedTextColor.YELLOW), Component.text(data.apiVersion()));
-                        component.appendNewline().appendNewline();
-
-                        List<Dependency> dependencies = loader.getDependencies(pl);
-
-                        component.append(appendDependencyList("Dependencies", filterDeps(dependencies, Dependency::required)));
-                        component.appendNewline().appendNewline();
-                        component.append(appendDependencyList("Soft-Dependencies", filterDeps(dependencies, dependency -> !dependency.required())));
-
-                        List<Dependency> dependents = loader.getDependents(pl);
-
-                        component.appendNewline().appendNewline();
-                        component.append(appendDependencyList("Dependants", filterDeps(dependents, Dependency::required)));
-                        component.appendNewline().appendNewline();
-
-                        component.append(appendDependencyList("Soft-Dependants", filterDeps(dependents, dependency -> !dependency.required())));
-                        component.appendNewline();
-
-                        plugin.getAdventure().sender(sender).sendMessage(component);
-                    },
-                    () -> sender.sendMessage("Not found plugin: " + pluginName) // TODO
+            component.appendNewline();
+            component.append(
+                    Component.text(" " + data.name(), NamedTextColor.YELLOW, TextDecoration.BOLD),
+                    Component.text(" v" + data.version().replace("v", ""), NamedTextColor.GRAY),
+                    Component.text(" - ", NamedTextColor.DARK_GRAY),
+                    Component.text(target.isEnabled() ? "Enabled" : "Disabled", target.isEnabled() ? NamedTextColor.GREEN : NamedTextColor.RED, TextDecoration.BOLD)
             );
+
+            component.appendNewline().appendNewline();
+
+            if (!data.authors().isEmpty()) component.append(
+                    Component.text("    Author(s) ", NamedTextColor.YELLOW), Component.text(data.authors().toString().replace("[", "").replace("]", "")),
+                    Component.newline()
+            );
+
+            if (!data.contributors().isEmpty()) component.append(
+                    Component.text("    Contributors ", NamedTextColor.YELLOW), Component.text(data.contributors().toString().replace("[", "").replace("]", "")),
+                    Component.newline()
+            );
+
+            if (data.description() != null && !data.description().isEmpty()) component.append(
+                    Component.text("    Description ", NamedTextColor.YELLOW), Component.text(data.description()),
+                    Component.newline()
+            );
+
+            if (data.website() != null && !data.website().isEmpty()) component.append(
+                    Component.text("    Description ", NamedTextColor.YELLOW), Component.text(data.website()),
+                    Component.newline()
+            );
+
+            component.append(Component.text("    API-Ver ", NamedTextColor.YELLOW), Component.text(data.apiVersion()));
+            component.appendNewline().appendNewline();
+
+            List<Dependency> dependencies = loader.getDependencies(target);
+
+            component.append(appendDependencyList("Dependencies", filterDeps(dependencies, Dependency::required)));
+            component.appendNewline().appendNewline();
+            component.append(appendDependencyList("Soft-Dependencies", filterDeps(dependencies, dependency -> !dependency.required())));
+
+            List<Dependency> dependents = loader.getDependents(target);
+
+            component.appendNewline().appendNewline();
+            component.append(appendDependencyList("Dependants", filterDeps(dependents, Dependency::required)));
+            component.appendNewline().appendNewline();
+
+            component.append(appendDependencyList("Soft-Dependants", filterDeps(dependents, dependency -> !dependency.required())));
+            component.appendNewline();
+
+            plugin.getAdventure().sender(sender).sendMessage(component);
+
         });
     }
 

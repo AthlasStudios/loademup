@@ -66,4 +66,5 @@ public interface PluginLoader {
     @NotNull File getPluginsFolder();
 
     ClassLoaderValidationResult validateClassLoader(File file);
+
 }
