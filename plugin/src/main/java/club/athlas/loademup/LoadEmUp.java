@@ -21,6 +21,7 @@ import dev.jorel.commandapi.CommandAPIPaperConfig;
 import dev.jorel.commandapi.CommandAPISpigotConfig;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,6 +72,8 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
         new LEUMainCommand(this)
                 .register();
+
+        Bukkit.getServicesManager().register(LoadEmUp.class, this, this, ServicePriority.Normal);
 
         updateChecker.cacheLatestVersion();
     }

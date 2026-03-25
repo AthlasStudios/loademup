@@ -12,7 +12,7 @@ plugins {
 
 allprojects {
     group = "club.athlas"
-    version = "0.1.3"
+    version = "0.1.4"
 
     apply(plugin = "java-library")
 
