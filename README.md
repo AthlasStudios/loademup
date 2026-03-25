@@ -5,8 +5,6 @@
 
 [![Download on Modrinth](https://img.shields.io/badge/Download%20on-Modrinth-blue?logo=modrinth)](https://modrinth.com/plugin/loademup)
 
----
-
 ## 🚀 Features
 
 - 🛡️ **Virus & Threat Scanning**  
@@ -24,16 +22,12 @@
 - ⚡ **Full Plugin Lifecycle Management**  
   Load new plugins, unload unwanted plugins, enable or disable plugins dynamically without server restarts.
 
----
-
 ## 📦 Installation
 
 1. Download the latest `.jar` file from the [Modrinth LoadEmUp page](https://modrinth.com/plugin/loademup).
 2. Drop it into your server's `plugins` folder.
 3. Restart your server or use `/reload` (if you're brave 😅).
 4. You're good to go!
-
----
 
 ## 💻 Commands
 
@@ -48,8 +42,6 @@
 | `/loademup scan <plugin>`           | Scan a plugin for viruses/threats | `loademup.command.scan`    |
 | `/loademup info <plugin>`           | Get plugin info                   | `loademup.command.info`    |
 
----
-
 ## ⚙️ Permissions
 
 | Permission Node            | Description                          |
@@ -63,38 +55,26 @@
 | `loademup.command.scan`    | Allows scanning plugins              |
 | `loademup.command.info`    | Allows viewing plugin information    |
 
----
-
 ## 🛠️ Requirements
 
 - Spigot 1.13+ (may work on older versions but not officially supported)
 - Java 17+
 
----
-
 ## 🧩 Plugin Compatibility
 
 LoadEmUp is designed to work alongside most modern plugins. However, plugins with complex stateful behavior may not fully support runtime reloads. Always check integrity status before applying reloads in production.
-
----
 
 ## 📚 Documentation
 
 For detailed guides, configuration help, and FAQs, visit the [LoadEmUp Wiki](https://gurwiworks.gitbook.io/loademup-wiki).
 
----
-
 ## 📢 Contributing
 
 Got a feature request or found a bug? Open an [issue](https://github.com/AthlasStudios/LoadEmUp/issues) or join our [Discord community](https://dev.athlas.club) to report bugs and discuss features! Contributions are welcome.
 
----
-
 ## 📜 License
 
 MIT License – see [LICENSE](LICENSE) file for details.
-
----
 
 ## ❤️ Support
 
