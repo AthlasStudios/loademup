@@ -73,7 +73,7 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
         new LEUMainCommand(this)
                 .register();
 
-        Bukkit.getServicesManager().register(LoadEmUp.class, this, this, ServicePriority.Normal);
+        Bukkit.getServicesManager().register(LoadEmUpAPI.class, this, this, ServicePriority.Normal);
 
         updateChecker.cacheLatestVersion();
     }
