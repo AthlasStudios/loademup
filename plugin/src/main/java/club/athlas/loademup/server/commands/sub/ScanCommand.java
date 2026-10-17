@@ -7,8 +7,7 @@ import club.athlas.loademup.api.virustotal.model.VTAnalysisResult;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.base.PluginCommand;
 import club.athlas.loademup.utils.TagResolverUtils;
-import dev.jorel.commandapi.arguments.ArgumentSuggestions;
-import dev.jorel.commandapi.arguments.GreedyStringArgument;
+import dev.gurwi.prism.bukkit.argument.GreedyStringArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -32,61 +31,60 @@ public class ScanCommand extends PluginCommand<LoadEmUp> {
 
     @Override
     public void setup() {
-        withPermission(LEUPermission.SCAN_COMMAND);
+        withDescription("Scan a plugin for viruses.");
+        withPermissions(LEUPermission.SCAN_COMMAND);
 
         withArguments(
                 new GreedyStringArgument("plugin")
-                        .replaceSuggestions(ArgumentSuggestions.stringCollection(sender ->
+                        .replaceSuggestions(
                                 loader.getPluginJarFiles().stream()
                                         .map(File::getName)
                                         .collect(Collectors.toList())
-                        ))
+                        )
         );
 
         executes((sender, args) -> {
-            String jarFileName = (String) args.get("plugin");
+            String jarFileName = args.get("plugin");
 
             sender.sendMessage("\n");
 
             plugin.getVirusTotalIntegration().ifPresentOrElse(
-                    virusTotal -> {
-                        loader.getPluginFile(jarFileName).ifPresentOrElse(
-                                file -> {
+                    virusTotal -> loader.getPluginFile(jarFileName).ifPresentOrElse(
+                            file -> {
 
-                                    plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_START);
-                                    virusTotal.runScan(file).whenComplete((uploadResponse, uploadErr) -> {
-                                        if (uploadErr != null) {
-                                            plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_UNABLE_TO_SCAN);
-                                            plugin.getLogger().log(Level.WARNING, "[VirusTotal] Unable to scan " + jarFileName, uploadErr);
+                                plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_START);
+                                virusTotal.runScan(file).whenComplete((uploadResponse, uploadErr) -> {
+                                    if (uploadErr != null) {
+                                        plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_UNABLE_TO_SCAN);
+                                        plugin.getLogger().log(Level.WARNING, "[VirusTotal] Unable to scan " + jarFileName, uploadErr);
+                                        return;
+                                    }
+
+                                    virusTotal.getAnalysisResult(uploadResponse.id()).whenComplete(((vtAnalysisResult, getErr) -> {
+                                        if (getErr != null) {
+                                            plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_NO_RESULT);
+                                            plugin.getLogger().log(Level.WARNING, "[VirusTotal] Unable get result " + jarFileName, getErr);
                                             return;
                                         }
 
-                                        virusTotal.getAnalysisResult(uploadResponse.id()).whenComplete(((vtAnalysisResult, getErr) -> {
-                                            if (getErr != null) {
-                                                plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_NO_RESULT);
-                                                plugin.getLogger().log(Level.WARNING, "[VirusTotal] Unable get result " + jarFileName, getErr);
-                                                return;
-                                            }
+                                        List<VTAnalysisResult.AVResult> detections = vtAnalysisResult.results();
+                                        TagResolver[] placeholders = {
+                                                Placeholder.component("list", getDetectionsList(detections)),
+                                                TagResolverUtils.resolverFrom(vtAnalysisResult)
+                                        };
 
-                                            List<VTAnalysisResult.AVResult> detections = vtAnalysisResult.results();
-                                            TagResolver[] placeholders = {
-                                                    Placeholder.component("list", getDetectionsList(detections)),
-                                                    TagResolverUtils.resolverFrom(vtAnalysisResult)
-                                            };
+                                        if (detections.isEmpty()) {
+                                            plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_CLEAR, placeholders);
+                                            return;
+                                        }
 
-                                            if (detections.isEmpty()) {
-                                                plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_CLEAR, placeholders);
-                                                return;
-                                            }
+                                        plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_THREATS_FOUND, placeholders);
+                                    }));
+                                });
+                            },
 
-                                            plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_THREATS_FOUND, placeholders);
-                                        }));
-                                    });
-                                },
-
-                                () -> plugin.getMessages().send(sender, LangKey.JAR_NOT_FOUND, Placeholder.parsed("file", jarFileName))
-                        );
-                    },
+                            () -> plugin.getMessages().send(sender, LangKey.JAR_NOT_FOUND, Placeholder.parsed("file", jarFileName))
+                    ),
 
                     () -> plugin.getMessages().send(sender, LangKey.VIRUS_SCAN_SERVICE_DISABLED)
             );

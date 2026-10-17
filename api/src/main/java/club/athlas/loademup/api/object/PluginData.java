@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 public record PluginData(String name, String version, List<String> authors, List<String> contributors, @Nullable String description, @Nullable String website, String apiVersion, boolean paperPlugin) {
@@ -15,7 +16,7 @@ public record PluginData(String name, String version, List<String> authors, List
         String name = desc.getName();
         String version = desc.getVersion();
         List<String> authors = desc.getAuthors();
-        List<String> contributors = desc.getContributors();
+        List<String> contributors = Collections.emptyList(); // TODO -> FUCK
         String description = desc.getDescription();
         String website = desc.getWebsite();
         String apiVersion = "Legacy";
@@ -28,7 +29,6 @@ public record PluginData(String name, String version, List<String> authors, List
         return new PluginData(name, version, authors, contributors, description, website, apiVersion, false);
     }
 
-    @SuppressWarnings("deprecation")
     @Contract("_ -> new")
     public static @NotNull PluginData from(@NotNull Plugin plugin) {
         return from(plugin.getDescription());

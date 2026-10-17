@@ -3,22 +3,18 @@ package club.athlas.loademup;
 import club.athlas.loademup.api.LoadEmUpAPI;
 import club.athlas.loademup.api.constant.Environment;
 import club.athlas.loademup.api.loader.PluginLoader;
-import club.athlas.loademup.api.loader.PluginLoadersManager;
-import club.athlas.loademup.api.platform.DefPlatform;
+import club.athlas.loademup.api.platform.PlatformIntegration;
+import club.athlas.loademup.api.platform.PlatformManger;
 import club.athlas.loademup.api.virustotal.VirusTotal;
 import club.athlas.loademup.config.ConfigLoader;
 import club.athlas.loademup.config.Messages;
-import club.athlas.loademup.config.constant.ConfigKey;
 import club.athlas.loademup.integration.ModrinthUpdateChecker;
 import club.athlas.loademup.integration.VirusTotalClient;
-import club.athlas.loademup.server.commands.LEUMainCommand;
-import club.athlas.loademup.server.loader.LoadersManager;
-import club.athlas.loademup.server.loader.PaperPluginLoader;
-import club.athlas.loademup.server.loader.SpigotPluginLoader;
-import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIConfig;
-import dev.jorel.commandapi.CommandAPIPaperConfig;
-import dev.jorel.commandapi.CommandAPISpigotConfig;
+import club.athlas.loademup.server.commands.LEUCommand;
+import club.athlas.loademup.server.platform.BasePlatformManager;
+import club.athlas.loademup.spigot.SpigotPlatform;
+import club.athlas.loademup.spigot.wrapper.LegacyPaperPlatform;
+import dev.gurwi.prism.paper.PaperPlatform;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -27,14 +23,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
 
 public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
-    private final PluginLoadersManager loadersManager = new LoadersManager();
-    private final Environment environment = Environment.PRODUCTION;
+    private final PlatformManger platformManger = new BasePlatformManager();
+    private final Environment environment = Environment.DEVELOPMENT;
 
-    private PluginLoader pluginLoader;
     private BukkitAudiences adventure;
     private ConfigLoader configLoader;
     private AtomicReference<VirusTotal> virusTotalIntegration;
@@ -44,34 +38,31 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
     public void onLoad() {
         getLogger().info("Loading LoadEmUp...");
 
-        loadersManager.registerPluginLoader(DefPlatform.SPIGOT, new SpigotPluginLoader(this));
-        loadersManager.registerPluginLoader(DefPlatform.PAPER, new PaperPluginLoader(this));
-
-        CommandAPIConfig<?> commandAPIConfig = DefPlatform.getCurrentPlatform() == DefPlatform.SPIGOT ? new CommandAPISpigotConfig(this) : new CommandAPIPaperConfig(this);
-        CommandAPI.onLoad(commandAPIConfig.verboseOutput(environment == Environment.DEVELOPMENT));
+        platformManger.registerPlatform(new SpigotPlatform(this), new LegacyPaperPlatform(this));
     }
 
     @Override
     public void onEnable() {
-        this.pluginLoader = loadersManager.findBestLoader();
         this.adventure = BukkitAudiences.create(this);
         this.configLoader = new ConfigLoader(this).load();
-        this.virusTotalIntegration = initVirusTotalClient();
+        this.virusTotalIntegration = VirusTotalClient.initVirusTotalClient(this);
         this.updateChecker = new ModrinthUpdateChecker(this, "loademup");
 
-        if (pluginLoader == null) {
-            getLogger().severe("No plugin loader found!");
+        PlatformIntegration currentPlatform = platformManger.getCurrentPlatform();
+
+        if (currentPlatform == null) {
+            getLogger().severe("Unsupported Platform!");
             Bukkit.getPluginManager().disablePlugin(this);
 
             return;
         }
 
-        getLogger().info("Initialized Plugin Loader for the " + DefPlatform.getCurrentPlatform().getIdentifier() + " platform.");
+        getLogger().info("Initialized Plugin Loader for the " + platformManger.getCurrentPlatform().getPlatform().getIdentifier() + " platform.");
 
-        CommandAPI.onEnable();
-
-        new LEUMainCommand(this)
-                .register();
+        PaperPlatform.configure(this)
+                .init()
+                .getCommandsRegistry()
+                .register(new LEUCommand(this).build());
 
         Bukkit.getServicesManager().register(LoadEmUpAPI.class, this, this, ServicePriority.Normal);
 
@@ -80,8 +71,6 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
     @Override
     public void onDisable() {
-        CommandAPI.onDisable();
-
         getVirusTotalIntegration().ifPresent(VirusTotal::shutdown);
     }
 
@@ -91,13 +80,13 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
     }
 
     @Override
-    public PluginLoadersManager getLoadersManager() {
-        return loadersManager;
+    public PlatformManger getPlatformManger() {
+        return platformManger;
     }
 
     @Override
     public @NotNull PluginLoader getLoader() {
-        return pluginLoader;
+        return platformManger.getCurrentPlatform().getLoader();
     }
 
     @Override
@@ -124,37 +113,6 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
     public ModrinthUpdateChecker getUpdateChecker() {
         return updateChecker;
-    }
-
-    private @NotNull AtomicReference<VirusTotal> initVirusTotalClient() {
-        AtomicReference<VirusTotal> clientRef = new AtomicReference<>(null);
-
-        if (!configLoader.getBool(ConfigKey.VIRUS_SCANNER_ENABLED, false)) return clientRef;
-
-        String apiKey = configLoader.getString(ConfigKey.VIRUS_SCANNER_API_KEY, "");
-
-        if (apiKey.isEmpty()) return clientRef;
-
-        VirusTotalClient virusTotalClient = new VirusTotalClient(this, apiKey);
-
-        virusTotalClient.hasValidApiKey().whenComplete(((result, throwable) -> {
-            if (throwable != null) {
-                getLogger().log(Level.WARNING, "Unable to initialize VirusTotalClient.", throwable);
-                virusTotalClient.shutdown();
-                return;
-            }
-
-            if (!result) {
-                getLogger().log(Level.WARNING, "The current VirusTotal ApiKey is invalid! Removing VT...");
-                virusTotalClient.shutdown();
-                return;
-            }
-
-            getLogger().log(Level.INFO, "Initializing VirusTotalClient...");
-            clientRef.set(virusTotalClient);
-        }));
-
-        return clientRef;
     }
 
 }

@@ -12,12 +12,16 @@ plugins {
 
 allprojects {
     group = "club.athlas"
-    version = "0.1.4"
+    version = "0.1.5-DEV"
 
     apply(plugin = "java-library")
 
     java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17)) // TODO -> TRY TO GO TO 8 FOR LEGACY SUPPORT
+    }
+
+    configurations.all {
+        exclude(group = "org.jspecify", module = "jspecify")
     }
 }
 
@@ -27,12 +31,14 @@ subprojects {
         mavenLocal()
 
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.codemc.org/repository/maven-public/")
+        maven("https://libraries.minecraft.net")
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+        compileOnly("org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT")
 
         // libs
         compileOnly("org.jetbrains:annotations:26.0.2")

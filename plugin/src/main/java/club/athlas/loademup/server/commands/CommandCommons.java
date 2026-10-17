@@ -7,6 +7,7 @@ import club.athlas.loademup.api.utils.LEUUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.utils.TagResolverUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -38,29 +39,31 @@ public class CommandCommons {
     }
 
     public static boolean sendClassLoaderValidationResult(@NotNull LoadEmUp plugin, @NotNull File file, CommandSender sender) {
+        TagResolver.Single filePlaceholder = Placeholder.parsed("file", file.getName());
+
         return switch (plugin.getLoader().validateClassLoader(file)) {
             case FILE_NOT_FOUND -> {
-                plugin.getMessages().send(sender, LangKey.JAR_NOT_FOUND, Placeholder.parsed("file", file.getName()));
+                plugin.getMessages().send(sender, LangKey.JAR_NOT_FOUND, filePlaceholder);
                 yield false;
             }
 
             case MISSING_PLUGIN_DESCRIPTION -> {
-                plugin.getMessages().send(sender, LangKey.MISSING_PLUGIN_DESCRIPTION, Placeholder.parsed("file", file.getName()));
+                plugin.getMessages().send(sender, LangKey.MISSING_PLUGIN_DESCRIPTION, filePlaceholder);
                 yield false;
             }
 
             case NO_MAIN_CLASS -> {
-                plugin.getMessages().send(sender, LangKey.NO_MAIN_CLASS, Placeholder.parsed("file", file.getName()));
+                plugin.getMessages().send(sender, LangKey.NO_MAIN_CLASS, filePlaceholder);
                 yield false;
             }
 
             case INVALID_MAIN_CLASS -> {
-                plugin.getMessages().send(sender, LangKey.INVALID_MAIN_CLASS, Placeholder.parsed("file", file.getName()));
+                plugin.getMessages().send(sender, LangKey.INVALID_MAIN_CLASS, filePlaceholder);
                 yield false;
             }
 
             case UNEXPECTED_ERROR -> {
-                plugin.getMessages().send(sender, LangKey.UNEXPECTED_ERROR, Placeholder.parsed("file", file.getName()));
+                plugin.getMessages().send(sender, LangKey.UNEXPECTED_ERROR, filePlaceholder);
                 yield false;
             }
 

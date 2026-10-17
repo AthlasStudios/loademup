@@ -10,12 +10,12 @@ import club.athlas.loademup.api.utils.FileUtils;
 import club.athlas.loademup.api.utils.LEUUtils;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
+import club.athlas.loademup.server.commands.argument.PluginArgument;
 import club.athlas.loademup.server.commands.base.PluginCommand;
-import club.athlas.loademup.server.commands.base.argument.CommandFlag;
-import club.athlas.loademup.server.commands.base.argument.FlagArgument;
-import club.athlas.loademup.server.commands.base.argument.FlagsContainer;
-import club.athlas.loademup.server.commands.base.argument.PluginArgument;
 import club.athlas.loademup.utils.TagResolverUtils;
+import dev.gurwi.prism.bukkit.argument.FlagArgument;
+import dev.gurwi.prism.bukkit.argument.parser.ParsedFlags;
+import dev.gurwi.prism.bukkit.argument.type.Flag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.plugin.InvalidDescriptionException;
@@ -42,27 +42,28 @@ public class ReloadCommand extends PluginCommand<LoadEmUp> {
 
     @Override
     public void setup() {
-        withPermission(LEUPermission.RELOAD_COMMAND);
+        withDescription("Reload a plugin.");
+        withPermissions(LEUPermission.RELOAD_COMMAND);
 
         withArguments(
-                new PluginArgument("plugin", plugin)
+                new PluginArgument(plugin, "plugin")
         );
 
         withOptionalArguments(
                 new FlagArgument("flags")
-                        .withFlags(
-                                new CommandFlag("force", "Force reload plugin ignoring every plugin depending on it."),
-                                new CommandFlag("reload-deps", "Reload all dependents of the plugin with the plugin itself.")
+                        .flags(
+                                Flag.presence("force", 'f'), // TODO -> ADD TOOLTIP "Force reload plugin ignoring every plugin depending on it."
+                                Flag.presence("reload-deps", 'r') // TODO -> ADD TOOLTIP "Reload all dependents of the plugin with the plugin itself."
                         )
         );
 
 
         executes((sender, args) -> {
-            Plugin target = (Plugin) args.get("plugin");
-            FlagsContainer flags = (FlagsContainer) args.getOptional("flags").orElse(FlagsContainer.EMPTY);
+            Plugin target = args.get("plugin");
+            ParsedFlags flags = (ParsedFlags) args.getOptional("flags").orElse(ParsedFlags.empty());
 
-            Boolean force = flags.get("force");
-            Boolean reloadDeps = flags.get("reload-deps");
+            Boolean force = flags.has("force");
+            Boolean reloadDeps = flags.has("reload-deps");
 
             sender.sendMessage("\n");
 

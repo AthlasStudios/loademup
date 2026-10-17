@@ -16,3 +16,6 @@ rootProject.name = "LoadEmUp"
 
 include(":plugin")
 include(":api")
+include(":platform:common")
+include(":platform:paper")
+include(":platform:spigot")

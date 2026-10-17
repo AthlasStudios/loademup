@@ -5,9 +5,12 @@ import club.athlas.loademup.api.virustotal.VirusTotal;
 import club.athlas.loademup.api.virustotal.model.AVVerdict;
 import club.athlas.loademup.api.virustotal.model.VTAnalysisResult;
 import club.athlas.loademup.api.virustotal.model.VTUploadResponse;
+import club.athlas.loademup.config.ConfigLoader;
+import club.athlas.loademup.config.constant.ConfigKey;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,9 +33,42 @@ public class VirusTotalClient implements VirusTotal {
     private final LoadEmUp plugin;
     private final String apiKey;
 
-    public VirusTotalClient(LoadEmUp plugin, String apiKey) {
+    private VirusTotalClient(LoadEmUp plugin, String apiKey) {
         this.plugin = plugin;
         this.apiKey = apiKey;
+    }
+
+    public static @NotNull AtomicReference<VirusTotal> initVirusTotalClient(@NotNull LoadEmUp plugin) {
+        AtomicReference<VirusTotal> clientRef = new AtomicReference<>(null);
+        ConfigLoader configLoader = plugin.getConfigLoader();
+        Logger logger = plugin.getLogger();
+
+        if (!configLoader.getBool(ConfigKey.VIRUS_SCANNER_ENABLED, false)) return clientRef;
+
+        String apiKey = configLoader.getString(ConfigKey.VIRUS_SCANNER_API_KEY, "");
+
+        if (apiKey.isEmpty()) return clientRef;
+
+        VirusTotalClient virusTotalClient = new VirusTotalClient(plugin, apiKey);
+
+        virusTotalClient.hasValidApiKey().whenComplete(((result, throwable) -> {
+            if (throwable != null) {
+                logger.log(Level.WARNING, "Unable to initialize VirusTotalClient.", throwable);
+                virusTotalClient.shutdown();
+                return;
+            }
+
+            if (!result) {
+                logger.log(Level.WARNING, "The current VirusTotal ApiKey is invalid! Removing VT...");
+                virusTotalClient.shutdown();
+                return;
+            }
+
+            logger.log(Level.INFO, "Initializing VirusTotalClient...");
+            clientRef.set(virusTotalClient);
+        }));
+
+        return clientRef;
     }
 
     @Override

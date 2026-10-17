@@ -8,12 +8,12 @@ import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.object.PluginData;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
-import club.athlas.loademup.server.commands.base.argument.CommandFlag;
-import club.athlas.loademup.server.commands.base.argument.FlagArgument;
+import club.athlas.loademup.server.commands.argument.PluginArgument;
 import club.athlas.loademup.server.commands.base.PluginCommand;
-import club.athlas.loademup.server.commands.base.argument.FlagsContainer;
-import club.athlas.loademup.server.commands.base.argument.PluginArgument;
 import club.athlas.loademup.utils.TagResolverUtils;
+import dev.gurwi.prism.bukkit.argument.FlagArgument;
+import dev.gurwi.prism.bukkit.argument.parser.ParsedFlags;
+import dev.gurwi.prism.bukkit.argument.type.Flag;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.command.CommandSender;
@@ -35,26 +35,27 @@ public class UnloadCommand extends PluginCommand<LoadEmUp> {
 
     @Override
     public void setup() {
-        withPermission(LEUPermission.UNLOAD_COMMAND);
+        withDescription("Unload a plugin.");
+        withPermissions(LEUPermission.UNLOAD_COMMAND);
 
         withArguments(
-                new PluginArgument("plugin", plugin)
+                new PluginArgument(plugin, "plugin")
         );
 
         withOptionalArguments(
                 new FlagArgument("flags")
-                        .withFlags(
-                                new CommandFlag("force", "Force the plugin unload even if it has dependents."),
-                                new CommandFlag("unload-deps", "Unload all dependents of the plugin.")
+                        .flags(
+                                Flag.presence("force", 'f'), // TODO -> ADD TOOLTIP "Force reload plugin ignoring every plugin depending on it."
+                                Flag.presence("unload-deps", 'u') // TODO -> ADD TOOLTIP "Reload all dependents of the plugin with the plugin itself."
                         )
         );
 
         executes((sender, args) -> {
-            Plugin target = (Plugin) args.get("plugin");
-            FlagsContainer flags = (FlagsContainer) args.getOptional("flags").orElse(FlagsContainer.EMPTY);
+            Plugin target = args.get("plugin");
+            ParsedFlags flags = (ParsedFlags) args.getOptional("flags").orElse(ParsedFlags.empty());
 
-            boolean force = flags.get("force");
-            boolean unloadDeps = flags.get("unload-deps");
+            boolean force = flags.has("force");
+            boolean unloadDeps = flags.has("unload-deps");
 
             sender.sendMessage("\n");
 

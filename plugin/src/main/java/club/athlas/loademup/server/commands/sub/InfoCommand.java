@@ -5,8 +5,8 @@ import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.object.PluginData;
+import club.athlas.loademup.server.commands.argument.PluginArgument;
 import club.athlas.loademup.server.commands.base.PluginCommand;
-import club.athlas.loademup.server.commands.base.argument.PluginArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,14 +31,15 @@ public class InfoCommand extends PluginCommand<LoadEmUp> {
 
     @Override
     public void setup() {
-        withPermission(LEUPermission.INFO_COMMAND);
+        withDescription("Display information about a plugin.");
+        withPermissions(LEUPermission.INFO_COMMAND);
 
         withArguments(
-                new PluginArgument("plugin", plugin)
+                new PluginArgument(plugin, "plugin")
         );
 
         executes((sender, args) -> {
-            Plugin target = (Plugin) args.get("plugin");
+            Plugin target = args.get("plugin");
 
             PluginData data = PluginData.from(target);
             TextComponent.@NotNull Builder component = Component.text();

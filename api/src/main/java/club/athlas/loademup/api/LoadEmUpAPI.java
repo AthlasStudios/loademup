@@ -2,7 +2,7 @@ package club.athlas.loademup.api;
 
 import club.athlas.loademup.api.constant.Environment;
 import club.athlas.loademup.api.loader.PluginLoader;
-import club.athlas.loademup.api.loader.PluginLoadersManager;
+import club.athlas.loademup.api.platform.PlatformManger;
 import club.athlas.loademup.api.virustotal.VirusTotal;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public interface LoadEmUpAPI {
 
-    PluginLoadersManager getLoadersManager();
+    PlatformManger getPlatformManger();
 
     @NotNull PluginLoader getLoader();
 

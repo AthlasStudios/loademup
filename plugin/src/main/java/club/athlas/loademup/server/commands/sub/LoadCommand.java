@@ -10,8 +10,7 @@ import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
 import club.athlas.loademup.server.commands.base.PluginCommand;
 import club.athlas.loademup.utils.TagResolverUtils;
-import dev.jorel.commandapi.arguments.ArgumentSuggestions;
-import dev.jorel.commandapi.arguments.GreedyStringArgument;
+import dev.gurwi.prism.bukkit.argument.GreedyStringArgument;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -31,19 +30,22 @@ public class LoadCommand extends PluginCommand<LoadEmUp> {
 
     @Override
     public void setup() {
+        withDescription("Load a plugin.");
+        withPermissions(LEUPermission.LOAD_COMMAND);
+
         withArguments(
                 new GreedyStringArgument("plugin")
-                        .replaceSuggestions(ArgumentSuggestions.stringCollection(sender ->
+                        .replaceSuggestions(
                                 loader.getPluginJarFiles().stream()
                                         .map(File::getName)
                                         .collect(Collectors.toList())
-                        ))
+                        )
         );
 
         executes((sender, args) -> {
-            withPermission(LEUPermission.LOAD_COMMAND);
+            withPermissions(LEUPermission.LOAD_COMMAND);
 
-            String jarFileName = (String) args.get("plugin");
+            String jarFileName = args.get("plugin");
 
             sender.sendMessage("\n");
 

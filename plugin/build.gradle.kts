@@ -1,6 +1,5 @@
 plugins {
     id("com.gradleup.shadow")
-    id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.run-paper")
     id("com.modrinth.minotaur")
 
@@ -26,17 +25,18 @@ val pluginData = PluginData(
 
 dependencies {
     implementation(project(":api"))
+    implementation(project(":platform:spigot"))
+    implementation(project(":platform:paper"))
 
     // DEPENDENCIES
-    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
-
-    implementation("dev.jorel:commandapi-spigot-shade:11.1.0")
-    implementation("dev.jorel:commandapi-paper-shade:11.1.0")
+    implementation("dev.gurwi:prism-paper:1.0.0-beta.1")
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
     implementation("net.kyori:adventure-text-minimessage:4.21.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.code.gson:gson:2.13.1")
+
+    compileOnly("com.mojang:brigadier:1.0.18")
 }
 
 tasks {
@@ -46,27 +46,30 @@ tasks {
 
     shadowJar {
         archiveFileName = "${rootProject.name}-${rootProject.version}.jar"
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         from("build/generated/resourceFactory/main") {
             include("plugin.yml", "paper-plugin.yml")
         }
 
-        relocate("dev.jorel.commandapi", "club.athlas.loademup.libs.commands")
         relocate("net.kyori", "club.athlas.loademup.libs.kyori")
         relocate("okhttp3", "club.athlas.loademup.libs.okhttp3")
         relocate("okio", "club.athlas.loademup.libs.okio")
-        //relocate("com.google", "club.athlas.loademup.libs")
+        relocate("dev.gurwi.prism", "club.athlas.loademup.libs.command")
+        relocate("dev.gurwi.confetti", "club.athlas.loademup.libs.config")
+
+        exclude("LICENSE", "META-INF/maven/**")
     }
 
     runServer {
-        minecraftVersion("1.21.10")
+        minecraftVersion("1.21.11")
     }
 
     @Suppress("UnstableApiUsage")
     withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
         javaLauncher = rootProject.javaToolchains.launcherFor {
             vendor = JvmVendorSpec.JETBRAINS
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
         }
 
         jvmArgs("-XX:+AllowEnhancedClassRedefinition")

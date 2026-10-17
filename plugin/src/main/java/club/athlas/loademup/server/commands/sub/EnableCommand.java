@@ -7,8 +7,8 @@ import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.PluginData;
 import club.athlas.loademup.config.constant.LangKey;
 import club.athlas.loademup.server.commands.CommandCommons;
+import club.athlas.loademup.server.commands.argument.PluginArgument;
 import club.athlas.loademup.server.commands.base.PluginCommand;
-import club.athlas.loademup.server.commands.base.argument.PluginArgument;
 import club.athlas.loademup.utils.TagResolverUtils;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -28,14 +28,15 @@ public class EnableCommand extends PluginCommand<LoadEmUp> {
 
     @Override
     public void setup() {
-        withPermission(LEUPermission.ENABLE_COMMAND);
+        withDescription("Enable a plugin.");
+        withPermissions(LEUPermission.ENABLE_COMMAND);
 
         withArguments(
-                new PluginArgument("plugin", plugin)
+                new PluginArgument(plugin, "plugin")
         );
 
         executes((sender, args) -> {
-            Plugin target = (Plugin) args.get("plugin");
+            Plugin target = args.get("plugin");
 
             sender.sendMessage("\n");
 
