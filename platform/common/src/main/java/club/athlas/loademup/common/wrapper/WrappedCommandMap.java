@@ -1,6 +1,6 @@
 package club.athlas.loademup.common.wrapper;
 
-import club.athlas.loademup.common.utils.ReflectionUtils;
+import club.athlas.loademup.common.utils.ReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -15,7 +15,7 @@ public class WrappedCommandMap {
     private final Server server;
 
     public WrappedCommandMap(CommandMap commandMap) throws NoSuchFieldException, IllegalAccessException {
-        knownCommands = ReflectionUtils.accessFieldFromType(
+        knownCommands = ReflectionUtil.accessFieldFromType(
                 SimpleCommandMap.class,
                 commandMap,
                 "knownCommands"

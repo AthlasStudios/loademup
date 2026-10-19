@@ -1,6 +1,6 @@
 package club.athlas.loademup.spigot.wrapper;
 
-import club.athlas.loademup.common.utils.ReflectionUtils;
+import club.athlas.loademup.common.utils.ReflectionUtil;
 import club.athlas.loademup.common.wrapper.WrappedCommandMap;
 import club.athlas.loademup.common.wrapper.WrappedInstanceManager;
 import org.bukkit.plugin.Plugin;
@@ -22,18 +22,18 @@ public class SpigotPluginInstanceManager implements WrappedInstanceManager {
     public SpigotPluginInstanceManager(SimplePluginManager pluginManager) throws NoSuchFieldException, IllegalAccessException {
         this.pluginManager = pluginManager;
 
-        this.plugins = ReflectionUtils.accessField(
+        this.plugins = ReflectionUtil.accessField(
                 pluginManager,
                 "plugins"
         );
 
-        this.lookupNames = ReflectionUtils.accessField(
+        this.lookupNames = ReflectionUtil.accessField(
                 pluginManager,
                 "lookupNames"
         );
 
         this.commandMap = new WrappedCommandMap(
-                ReflectionUtils.accessField(
+                ReflectionUtil.accessField(
                         pluginManager,
                         "commandMap"
                 )

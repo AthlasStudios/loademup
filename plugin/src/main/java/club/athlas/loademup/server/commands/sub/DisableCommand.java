@@ -29,7 +29,7 @@ public class DisableCommand extends PluginCommand<LoadEmUp> {
     @Override
     public void setup() {
         withDescription("Disable a plugin.");
-        withPermissions(LEUPermission.DISABLE_COMMAND);
+        withPermission(LEUPermission.DISABLE_COMMAND);
 
         withArguments(
                 new PluginArgument(plugin, "plugin")

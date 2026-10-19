@@ -3,7 +3,6 @@ package club.athlas.loademup;
 import club.athlas.loademup.api.LoadEmUpAPI;
 import club.athlas.loademup.api.constant.Environment;
 import club.athlas.loademup.api.loader.PluginLoader;
-import club.athlas.loademup.api.platform.PlatformIntegration;
 import club.athlas.loademup.api.platform.PlatformManger;
 import club.athlas.loademup.api.virustotal.VirusTotal;
 import club.athlas.loademup.config.ConfigLoader;
@@ -12,8 +11,6 @@ import club.athlas.loademup.integration.ModrinthUpdateChecker;
 import club.athlas.loademup.integration.VirusTotalClient;
 import club.athlas.loademup.server.commands.LEUCommand;
 import club.athlas.loademup.server.platform.BasePlatformManager;
-import club.athlas.loademup.spigot.SpigotPlatform;
-import club.athlas.loademup.spigot.wrapper.LegacyPaperPlatform;
 import dev.gurwi.prism.paper.PaperPlatform;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
@@ -26,38 +23,35 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
-    private final PlatformManger platformManger = new BasePlatformManager();
     private final Environment environment = Environment.DEVELOPMENT;
 
     private BukkitAudiences adventure;
     private ConfigLoader configLoader;
+    private PlatformManger platformManger;
     private AtomicReference<VirusTotal> virusTotalIntegration;
     private ModrinthUpdateChecker updateChecker;
 
     @Override
     public void onLoad() {
         getLogger().info("Loading LoadEmUp...");
-
-        platformManger.registerPlatform(new SpigotPlatform(this), new LegacyPaperPlatform(this));
     }
 
     @Override
     public void onEnable() {
         this.adventure = BukkitAudiences.create(this);
         this.configLoader = new ConfigLoader(this).load();
+        this.platformManger = new BasePlatformManager(this);
         this.virusTotalIntegration = VirusTotalClient.initVirusTotalClient(this);
         this.updateChecker = new ModrinthUpdateChecker(this, "loademup");
 
-        PlatformIntegration currentPlatform = platformManger.getCurrentPlatform();
-
-        if (currentPlatform == null) {
+        if (platformManger.getIntegration() == null) {
             getLogger().severe("Unsupported Platform!");
             Bukkit.getPluginManager().disablePlugin(this);
 
             return;
         }
 
-        getLogger().info("Initialized Plugin Loader for the " + platformManger.getCurrentPlatform().getPlatform().getIdentifier() + " platform.");
+        getLogger().info("Initialized Plugin Loader for the " + platformManger.getIntegration().getPlatform().getIdentifier() + " platform.");
 
         PaperPlatform.configure(this)
                 .init()
@@ -86,7 +80,7 @@ public final class LoadEmUp extends JavaPlugin implements LoadEmUpAPI {
 
     @Override
     public @NotNull PluginLoader getLoader() {
-        return platformManger.getCurrentPlatform().getLoader();
+        return platformManger.getIntegration().getLoader();
     }
 
     @Override

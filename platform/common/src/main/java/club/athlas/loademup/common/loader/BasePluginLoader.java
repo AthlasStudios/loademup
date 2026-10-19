@@ -6,7 +6,7 @@ import club.athlas.loademup.api.loader.PluginLoader;
 import club.athlas.loademup.api.object.Dependency;
 import club.athlas.loademup.api.result.ClassLoaderValidationResult;
 import club.athlas.loademup.api.utils.FileUtils;
-import club.athlas.loademup.common.utils.ReflectionUtils;
+import club.athlas.loademup.common.utils.ReflectionUtil;
 import club.athlas.loademup.common.utils.ThreadUtils;
 import club.athlas.loademup.common.wrapper.WrappedInstanceManager;
 import org.bukkit.Bukkit;
@@ -195,7 +195,7 @@ public abstract class BasePluginLoader implements PluginLoader {
 
             if (!(classLoader instanceof PluginClassLoader pluginClassLoader)) return Optional.empty();
 
-            File file = ReflectionUtils.accessField(pluginClassLoader, "file");
+            File file = ReflectionUtil.accessField(pluginClassLoader, "file");
             if (file == null) return Optional.empty();
 
             return Optional.of(file);
@@ -264,7 +264,7 @@ public abstract class BasePluginLoader implements PluginLoader {
 
     protected void syncCommands() {
         try {
-            ReflectionUtils.callMethod(Bukkit.getServer(), "syncCommands");
+            ReflectionUtil.callMethod(Bukkit.getServer(), "syncCommands");
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
 
         }

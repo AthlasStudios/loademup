@@ -32,7 +32,7 @@ public class ScanCommand extends PluginCommand<LoadEmUp> {
     @Override
     public void setup() {
         withDescription("Scan a plugin for viruses.");
-        withPermissions(LEUPermission.SCAN_COMMAND);
+        withPermission(LEUPermission.SCAN_COMMAND);
 
         withArguments(
                 new GreedyStringArgument("plugin")

@@ -43,7 +43,7 @@ public class ReloadCommand extends PluginCommand<LoadEmUp> {
     @Override
     public void setup() {
         withDescription("Reload a plugin.");
-        withPermissions(LEUPermission.RELOAD_COMMAND);
+        withPermission(LEUPermission.RELOAD_COMMAND);
 
         withArguments(
                 new PluginArgument(plugin, "plugin")
@@ -52,8 +52,8 @@ public class ReloadCommand extends PluginCommand<LoadEmUp> {
         withOptionalArguments(
                 new FlagArgument("flags")
                         .flags(
-                                Flag.presence("force", 'f'), // TODO -> ADD TOOLTIP "Force reload plugin ignoring every plugin depending on it."
-                                Flag.presence("reload-deps", 'r') // TODO -> ADD TOOLTIP "Reload all dependents of the plugin with the plugin itself."
+                                Flag.presence("force", 'f', "Force reload plugin ignoring every plugin depending on it."),
+                                Flag.presence("reload-deps", 'r', "Reload all dependents of the plugin with the plugin itself.")
                         )
         );
 
@@ -67,7 +67,7 @@ public class ReloadCommand extends PluginCommand<LoadEmUp> {
 
             sender.sendMessage("\n");
 
-            if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.RELOAD, target, sender)) return;
+            if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.RELOAD, target, sender) && !force) return;
 
             TagResolver pluginDataPlaceholder = TagResolverUtils.resolverFrom(PluginData.from(target));
             plugin.getMessages().send(sender, LangKey.LOOKING_FOR_NEW_JAR_FILE, pluginDataPlaceholder);

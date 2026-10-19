@@ -1,6 +1,7 @@
 package club.athlas.loademup.server.commands;
 
 import club.athlas.loademup.LoadEmUp;
+import club.athlas.loademup.api.constant.LEUPermission;
 import club.athlas.loademup.server.commands.base.PluginCommand;
 import club.athlas.loademup.server.commands.sub.*;
 import dev.gurwi.prism.bukkit.command.executor.GenericCommandExecutor;
@@ -14,7 +15,7 @@ public class LEUCommand extends PluginCommand<LoadEmUp> {
 
     @Override
     public void setup() {
-        withPermissions(BukkitPermission.startsWith("loademup."));
+        withPermission(BukkitPermission.startsWith(LEUPermission.COMMAND_PREFIX));
 
         HelpCommand helpCommand = new HelpCommand(plugin);
         helpCommand.setup();

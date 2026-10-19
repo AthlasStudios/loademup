@@ -4,16 +4,18 @@ import org.jetbrains.annotations.Nullable;
 
 public enum DefPlatform implements Platform {
 
-    SPIGOT("spigot", null),
-    PAPER("paper", "io.papermc.paper.plugin.lifecycle.event.LifecycleEventOwner"),
-    LEGACY_PAPER("legacy-paper", "io.papermc.paper.plugin.manager.PaperPluginManagerImpl");
+    SPIGOT("spigot", null, "club.athlas.loademup.spigot.SpigotPlatform"),
+    PAPER("paper", "io.papermc.paper.plugin.lifecycle.event.LifecycleEventOwner", "club.athlas.loademup.paper.PaperPlatform"),
+    LEGACY_PAPER("legacy-paper", "io.papermc.paper.plugin.manager.PaperPluginManagerImpl", "club.athlas.loademup.spigot.wrapper.LegacyPaperPlatform");
 
     private final String identifier;
-    private final String classPath;
+    private final String finderClassPath;
+    private final String integrationClassPath;
 
-    DefPlatform(String identifier, String classPath) {
+    DefPlatform(String identifier, @Nullable String finderClassPath, @Nullable String integrationClassPath) {
         this.identifier = identifier;
-        this.classPath = classPath;
+        this.finderClassPath = finderClassPath;
+        this.integrationClassPath = integrationClassPath;
     }
 
     @Override
@@ -24,11 +26,15 @@ public enum DefPlatform implements Platform {
     @Override
     @Nullable
     public String getFinderClassPath() {
-        return classPath;
+        return finderClassPath;
     }
 
-    public static Platform getCurrentPlatform() {
-        for (Platform value : DefPlatform.values()) {
+    public String getIntegrationClassPath() {
+        return integrationClassPath;
+    }
+
+    public static DefPlatform getCurrentPlatform() {
+        for (DefPlatform value : DefPlatform.values()) {
             if (value.getFinderClassPath() == null || value.getFinderClassPath().isEmpty()) continue;
 
             try {

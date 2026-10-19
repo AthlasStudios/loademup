@@ -32,7 +32,7 @@ public class InfoCommand extends PluginCommand<LoadEmUp> {
     @Override
     public void setup() {
         withDescription("Display information about a plugin.");
-        withPermissions(LEUPermission.INFO_COMMAND);
+        withPermission(LEUPermission.INFO_COMMAND);
 
         withArguments(
                 new PluginArgument(plugin, "plugin")

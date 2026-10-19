@@ -29,7 +29,7 @@ dependencies {
     implementation(project(":platform:paper"))
 
     // DEPENDENCIES
-    implementation("dev.gurwi:prism-paper:1.0.0-beta.1")
+    implementation("dev.gurwi:prism-paper:1.0.0-beta.3")
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
     implementation("net.kyori:adventure-text-minimessage:4.21.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")

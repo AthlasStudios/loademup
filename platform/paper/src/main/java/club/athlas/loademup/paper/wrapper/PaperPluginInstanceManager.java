@@ -1,6 +1,6 @@
 package club.athlas.loademup.paper.wrapper;
 
-import club.athlas.loademup.common.utils.ReflectionUtils;
+import club.athlas.loademup.common.utils.ReflectionUtil;
 import club.athlas.loademup.common.wrapper.WrappedCommandMap;
 import club.athlas.loademup.common.wrapper.WrappedInstanceManager;
 import io.papermc.paper.plugin.manager.PaperPluginManagerImpl;
@@ -22,23 +22,23 @@ public class PaperPluginInstanceManager implements WrappedInstanceManager {
     public PaperPluginInstanceManager(PaperPluginManagerImpl pluginManager) throws NoSuchFieldException, IllegalAccessException {
         this.pluginManager = pluginManager;
 
-        Object instanceManager = ReflectionUtils.accessField(
+        Object instanceManager = ReflectionUtil.accessField(
                 PaperPluginManagerImpl.getInstance(),
                 "instanceManager"
         );
 
-        this.plugins = ReflectionUtils.accessField(
+        this.plugins = ReflectionUtil.accessField(
                 instanceManager,
                 "plugins"
         );
 
-        this.lookupNames = ReflectionUtils.accessField(
+        this.lookupNames = ReflectionUtil.accessField(
                 instanceManager,
                 "lookupNames"
         );
 
         this.commandMap = new WrappedCommandMap(
-                ReflectionUtils.accessField(
+                ReflectionUtil.accessField(
                         instanceManager,
                         "commandMap"
                 )

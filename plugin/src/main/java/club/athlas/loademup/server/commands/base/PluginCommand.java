@@ -2,15 +2,16 @@ package club.athlas.loademup.server.commands.base;
 
 import dev.gurwi.prism.bukkit.command.BukkitCommandDefinition;
 import dev.gurwi.prism.bukkit.command.PrismBukkitCommand;
-import dev.gurwi.prism.platform.CommandsRegistry;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public abstract class PluginCommand<Plugin extends JavaPlugin> extends PrismBukkitCommand {
 
     protected final Plugin plugin;
+
+    private boolean configured = false;
 
     public PluginCommand(Plugin plugin, String name, List<String> aliases) {
         super(name, aliases);
@@ -22,20 +23,17 @@ public abstract class PluginCommand<Plugin extends JavaPlugin> extends PrismBukk
         this.plugin = plugin;
     }
 
-    public abstract void setup();
+    protected abstract void setup();
 
-    @Override
-    public BukkitCommandDefinition register(@NotNull CommandsRegistry<?, BukkitCommandDefinition> registry) {
+    private void configure() {
         setup();
-        return super.register(registry);
+        configured = true;
     }
 
     @Override
-    public PrismBukkitCommand withSubCommands(PrismBukkitCommand @NotNull ... children) {
-        for (PrismBukkitCommand child : children) {
-            if (child instanceof PluginCommand<?> command) command.setup();
-        }
-
-        return super.withSubCommands(children);
+    public BukkitCommandDefinition build(@Nullable BukkitCommandDefinition parent) {
+        configure();
+        return super.build(parent);
     }
+
 }

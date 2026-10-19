@@ -2,7 +2,7 @@ package club.athlas.loademup.server.commands.argument;
 
 import club.athlas.loademup.LoadEmUp;
 import club.athlas.loademup.api.loader.PluginLoader;
-import dev.gurwi.prism.bukkit.argument.BukkitArgument;
+import dev.gurwi.prism.bukkit.argument.base.BukkitArgument;
 import dev.gurwi.prism.exception.ArgumentParseException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;

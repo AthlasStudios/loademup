@@ -36,7 +36,7 @@ public class UnloadCommand extends PluginCommand<LoadEmUp> {
     @Override
     public void setup() {
         withDescription("Unload a plugin.");
-        withPermissions(LEUPermission.UNLOAD_COMMAND);
+        withPermission(LEUPermission.UNLOAD_COMMAND);
 
         withArguments(
                 new PluginArgument(plugin, "plugin")
@@ -45,8 +45,8 @@ public class UnloadCommand extends PluginCommand<LoadEmUp> {
         withOptionalArguments(
                 new FlagArgument("flags")
                         .flags(
-                                Flag.presence("force", 'f'), // TODO -> ADD TOOLTIP "Force reload plugin ignoring every plugin depending on it."
-                                Flag.presence("unload-deps", 'u') // TODO -> ADD TOOLTIP "Reload all dependents of the plugin with the plugin itself."
+                                Flag.presence("force", 'f', "Force reload plugin ignoring every plugin depending on it."),
+                                Flag.presence("unload-deps", 'u', "Reload all dependents of the plugin with the plugin itself.")
                         )
         );
 
@@ -59,7 +59,7 @@ public class UnloadCommand extends PluginCommand<LoadEmUp> {
 
             sender.sendMessage("\n");
 
-            if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.UNLOAD, target, sender)) return;
+            if (!CommandCommons.sendUnsupportedAction(plugin, LEUAction.UNLOAD, target, sender) && !force) return;
 
             TagResolver placeholder = TagResolverUtils.resolverFrom(PluginData.from(target));
 

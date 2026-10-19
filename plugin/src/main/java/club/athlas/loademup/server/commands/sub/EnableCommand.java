@@ -29,7 +29,7 @@ public class EnableCommand extends PluginCommand<LoadEmUp> {
     @Override
     public void setup() {
         withDescription("Enable a plugin.");
-        withPermissions(LEUPermission.ENABLE_COMMAND);
+        withPermission(LEUPermission.ENABLE_COMMAND);
 
         withArguments(
                 new PluginArgument(plugin, "plugin")

@@ -31,7 +31,7 @@ public class LoadCommand extends PluginCommand<LoadEmUp> {
     @Override
     public void setup() {
         withDescription("Load a plugin.");
-        withPermissions(LEUPermission.LOAD_COMMAND);
+        withPermission(LEUPermission.LOAD_COMMAND);
 
         withArguments(
                 new GreedyStringArgument("plugin")
@@ -43,8 +43,6 @@ public class LoadCommand extends PluginCommand<LoadEmUp> {
         );
 
         executes((sender, args) -> {
-            withPermissions(LEUPermission.LOAD_COMMAND);
-
             String jarFileName = args.get("plugin");
 
             sender.sendMessage("\n");
