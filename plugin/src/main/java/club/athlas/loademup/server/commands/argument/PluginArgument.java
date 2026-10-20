@@ -10,13 +10,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class PluginArgument extends BukkitArgument<PluginArgument, Plugin> {
 
-    private final LoadEmUp plugin;
     private final PluginLoader loader;
 
     public PluginArgument(@NotNull LoadEmUp plugin, String name) {
         super(name);
 
-        this.plugin = plugin;
         this.loader = plugin.getLoader();
 
         replaceSuggestions(
